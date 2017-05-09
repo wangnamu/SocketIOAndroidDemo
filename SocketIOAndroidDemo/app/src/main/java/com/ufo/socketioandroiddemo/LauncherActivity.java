@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.ufo.socketioandroiddemo.login.LoginActivity;
 import com.ufo.socketioandroiddemo.login.UserInfoBean;
 import com.ufo.socketioandroiddemo.login.UserInfoRepository;
+import com.ufo.socketioservice.SocketIOService;
 
 public class LauncherActivity extends Activity {
 
@@ -22,6 +23,10 @@ public class LauncherActivity extends Activity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         } else {
+
+            getRecent();
+            startSocketIOService();
+
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
@@ -29,5 +34,14 @@ public class LauncherActivity extends Activity {
 
     }
 
+
+    private void startSocketIOService() {
+        Intent intent = new Intent(getApplicationContext(), SocketIOService.class);
+        startService(intent);
+    }
+
+    private void getRecent() {
+
+    }
 
 }

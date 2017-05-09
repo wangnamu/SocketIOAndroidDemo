@@ -1,30 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
               android:orientation="vertical"
               android:paddingLeft="@dimen/activity_horizontal_margin"
-              android:paddingRight="@dimen/activity_horizontal_margin"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:paddingRight="@dimen/activity_horizontal_margin">
 
-    <EditText
-        android:id="@+id/edit_username"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"/>
+        android:layout_marginTop="64dp"
+        android:hint="用户名">
 
-    <EditText
-        android:id="@+id/edit_password"
+        <EditText
+            android:id="@+id/edit_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="20"
+            android:inputType="textPersonName"
+            android:text="wangnan"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPassword"/>
+        android:layout_marginTop="16dp"
+        android:hint="密码">
+
+        <EditText
+            android:id="@+id/edit_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="20"
+            android:inputType="textPassword"/>
+
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button"/>
+        android:layout_marginTop="32dp"
+        android:background="@color/colorPrimary"
+        android:textColor="#FFF"
+        android:text="确定"/>
 
 </LinearLayout>

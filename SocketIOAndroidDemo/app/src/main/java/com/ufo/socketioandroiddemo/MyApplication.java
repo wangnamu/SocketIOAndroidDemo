@@ -2,12 +2,10 @@ package com.ufo.socketioandroiddemo;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.ufo.retrofitextend.RetrofitExtendFactory;
 import com.ufo.socketioservice.DeviceToken;
-import com.ufo.socketioservice.SocketIOService;
 
 /**
  * Created by tjpld on 2017/5/5.
@@ -28,13 +26,8 @@ public class MyApplication extends Application {
         }
 
         //注册baseUrl
-        RetrofitExtendFactory.initWithBaseUrl("http://192.168.19.211:8080");
+        RetrofitExtendFactory.initWithBaseUrl("http://192.168.19.211:8080/NettySocketioWebDemo/");
 
-
-        SocketIOService socketIOService = new SocketIOService();
-
-        Intent intent = new Intent(getApplicationContext(), SocketIOService.class);
-        startService(intent);
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override

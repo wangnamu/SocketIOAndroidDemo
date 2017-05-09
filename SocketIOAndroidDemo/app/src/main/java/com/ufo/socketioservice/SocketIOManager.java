@@ -1,12 +1,13 @@
 package com.ufo.socketioservice;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.ufo.socketioandroiddemo.login.UserInfoBean;
 import com.ufo.socketioandroiddemo.login.UserInfoRepository;
+import com.ufo.socketioservice.model.SocketIOUserInfo;
+import com.ufo.utils.BackgroundUtil;
 
 import java.net.URISyntaxException;
 
@@ -53,8 +54,7 @@ public class SocketIOManager {
         return mSocket;
     }
 
-    public Boolean connect(Context context) {
-
+    public Boolean connect(final Context context) {
 
         final UserInfoBean userInfoBean = UserInfoRepository.getInstance().currentUser(context);
         final String deviceToken = DeviceToken.getDeviceToken(context);
@@ -65,13 +65,15 @@ public class SocketIOManager {
         if (mSocket == null)
             return false;
 
-        if (!mSocket.connected())
-            return false;
+        if (mSocket.connected())
+            return true;
 
 
         mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+
+                Log.d("SocketIOManager", "connecting");
 
                 SocketIOUserInfo model = new SocketIOUserInfo();
                 model.setSID(userInfoBean.getSID());
@@ -92,10 +94,12 @@ public class SocketIOManager {
                     mSocket.emit(LOGIN, json, new Ack() {
                         @Override
                         public void call(Object... args) {
-
                             if (args != null && args.length > 0
                                     && args[0].toString().equals("NO ACK")) {
+                                Log.d("SocketIOManager", "reconnecting");
                                 mSocket.connect();
+                            } else {
+                                Log.d("SocketIOManager", "connected");
                             }
 
                         }
@@ -106,22 +110,36 @@ public class SocketIOManager {
             }
         });
 
+
         mSocket.on(EVENT_NEWS, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+
+                Log.e("news", args + "");
 
                 Ack ack = (Ack) args[args.length - 1];
                 if (ack != null) {
                     ack.call("success");
                 }
 
+                Gson gson = new Gson();
+
+
+                if (BackgroundUtil.isForeground(context)) {
+
+                } else {
+
+                }
+
+
 
                 Log.e("onNews->", args[0].toString());
-
 
             }
         });
 
+
+        mSocket.connect();
 
         return true;
 

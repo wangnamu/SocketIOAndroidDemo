@@ -1,4 +1,4 @@
-package com.ufo.socketioservice;
+package com.ufo.socketioservice.model;
 
 import java.util.HashSet;
 

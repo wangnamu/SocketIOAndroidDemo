@@ -6,69 +6,69 @@ package com.ufo.socketioandroiddemo.login;
 
 public class UserInfoBean {
 
-    private String SID;// 主键
-    private String UserName;// 用户名
-    private String PassWord;// 密码
-    private String NickName;// 昵称
-    private String HeadPortrait;// 头像
-    private  long LoginTime;// 最近一次登录时间
-    private Boolean InUse;// 正在使用
+    private String sid;// 主键
+    private String userName;// 用户名
+    private String passWord;// 密码
+    private String nickName;// 昵称
+    private String headPortrait;// 头像
+    private  long loginTime;// 最近一次登录时间
+    private Boolean inUse;// 正在使用
 
 
     public String getSID() {
-        return SID;
+        return sid;
     }
 
-    public void setSID(String SID) {
-        this.SID = SID;
+    public void setSID(String sid) {
+        this.sid = sid;
     }
 
     public String getUserName() {
-        return UserName;
+        return userName;
     }
 
     public void setUserName(String userName) {
-        UserName = userName;
+        this.userName = userName;
     }
 
     public String getPassWord() {
-        return PassWord;
+        return passWord;
     }
 
     public void setPassWord(String passWord) {
-        PassWord = passWord;
+        this.passWord = passWord;
     }
 
     public String getNickName() {
-        return NickName;
+        return nickName;
     }
 
     public void setNickName(String nickName) {
-        NickName = nickName;
+        this.nickName = nickName;
     }
 
     public String getHeadPortrait() {
-        return HeadPortrait;
+        return headPortrait;
     }
 
     public void setHeadPortrait(String headPortrait) {
-        HeadPortrait = headPortrait;
+        this.headPortrait = headPortrait;
     }
 
     public long getLoginTime() {
-        return LoginTime;
+        return loginTime;
     }
 
     public void setLoginTime(long loginTime) {
-        LoginTime = loginTime;
+        this.loginTime = loginTime;
     }
 
     public Boolean getInUse() {
-        return InUse;
+        return inUse;
     }
 
     public void setInUse(Boolean inUse) {
-        InUse = inUse;
+        this.inUse = inUse;
     }
 
 

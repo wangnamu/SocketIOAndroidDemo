@@ -1,14 +1,17 @@
 package com.ufo.socketioandroiddemo.login;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ufo.socketioandroiddemo.MainActivity;
 import com.ufo.socketioandroiddemo.R;
 import com.ufo.socketioandroiddemo.mvp.MVPBaseActivity;
+import com.ufo.socketioservice.SocketIOService;
 
 
 public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPresenter> implements LoginContract.View {
@@ -48,10 +51,27 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
     @Override
     public void loginSuccess() {
 
+        getRecent();
+        startSocketIOService();
+
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+
     }
 
     @Override
     public void loginFail(String errorMessage) {
-        Toast.makeText(this,errorMessage,Toast.LENGTH_LONG).show();
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
     }
+
+
+    private void startSocketIOService() {
+        Intent intent = new Intent(getApplicationContext(), SocketIOService.class);
+        startService(intent);
+    }
+
+    private void getRecent() {
+
+    }
+
 }

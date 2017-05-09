@@ -23,28 +23,31 @@ public class SocketIOService extends Service {
 
         Log.e("onStartCommand","onStartCommand");
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int i = 0;
 
-                while (i < 10000) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        SocketIOManager.getInstance().connect(this);
 
-                    Boolean flag = BackgroundUtil.isForeground(getApplicationContext());
-
-                    Log.e("isForeground", flag + "");
-
-                    i++;
-
-                }
-
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                int i = 0;
+//
+//                while (i < 10000) {
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    Boolean flag = BackgroundUtil.isForeground(getApplicationContext());
+//
+//                    Log.e("isForeground", flag + "");
+//
+//                    i++;
+//
+//                }
+//
+//            }
+//        }).start();
 
         return super.onStartCommand(intent, flags, startId);
 
@@ -57,6 +60,7 @@ public class SocketIOService extends Service {
 
     @Override
     public void onDestroy() {
+        SocketIOManager.getInstance().disconnect();
         super.onDestroy();
     }
 }

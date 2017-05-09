@@ -1,4 +1,4 @@
-package com.ufo.socketioservice;
+package com.ufo.socketioservice.model;
 
 /**
  * Created by tjpld on 2017/5/1.
