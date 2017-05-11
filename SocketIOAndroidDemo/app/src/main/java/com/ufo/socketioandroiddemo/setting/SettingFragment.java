@@ -1,4 +1,5 @@
-package com.ufo.socketioandroiddemo.message.view;
+package com.ufo.socketioandroiddemo.setting;
+
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,16 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ufo.socketioandroiddemo.R;
-import com.ufo.socketioandroiddemo.message.contract.ChatContract;
-import com.ufo.socketioandroiddemo.message.presenter.ChatPresenter;
+import com.ufo.socketioandroiddemo.message.view.ChatFragment;
 import com.ufo.socketioandroiddemo.mvp.MVPBaseFragment;
 
+
 /**
- * Created by tjpld on 2017/5/9.
+ * MVPPlugin
+ *  邮箱 784787081@qq.com
  */
 
-public class ChatFragment extends MVPBaseFragment<ChatContract.View, ChatPresenter> implements ChatContract.View {
-
+public class SettingFragment extends MVPBaseFragment<SettingContract.View, SettingPresenter> implements SettingContract.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,16 +27,13 @@ public class ChatFragment extends MVPBaseFragment<ChatContract.View, ChatPresent
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_chat, container, false);
-
-
+        View view = inflater.inflate(R.layout.fragment_setting, container, false);
 
         return view;
     }
 
-    public static ChatFragment newInstance() {
-        ChatFragment fragment = new ChatFragment();
+    public static SettingFragment newInstance() {
+        SettingFragment fragment = new SettingFragment();
         return fragment;
     }
-
 }

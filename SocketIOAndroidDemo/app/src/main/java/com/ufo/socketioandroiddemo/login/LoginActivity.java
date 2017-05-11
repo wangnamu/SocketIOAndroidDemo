@@ -12,6 +12,8 @@ import com.ufo.socketioandroiddemo.MainActivity;
 import com.ufo.socketioandroiddemo.R;
 import com.ufo.socketioandroiddemo.mvp.MVPBaseActivity;
 import com.ufo.socketioservice.SocketIOService;
+import com.ufo.tools.MyChat;
+import com.ufo.tools.RealmConfig;
 
 
 public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPresenter> implements LoginContract.View {
@@ -49,14 +51,16 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
     }
 
     @Override
-    public void loginSuccess() {
+    public void loginSuccess(UserInfoBean userInfoBean) {
+
+        RealmConfig.setUp(getApplicationContext(), userInfoBean.getUserName());
 
         getRecent();
         startSocketIOService();
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-
+        finish();
     }
 
     @Override
@@ -71,7 +75,7 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
     }
 
     private void getRecent() {
-
+        MyChat.getInstance().getRecent(getApplicationContext());
     }
 
 }

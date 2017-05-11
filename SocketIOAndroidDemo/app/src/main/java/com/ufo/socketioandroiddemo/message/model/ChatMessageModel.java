@@ -3,6 +3,7 @@ package com.ufo.socketioandroiddemo.message.model;
 
 import android.content.Context;
 
+import com.google.gson.annotations.SerializedName;
 import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 
 /**
@@ -11,23 +12,35 @@ import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 
 public class ChatMessageModel {
 
+    @SerializedName(value = "SID", alternate = {"sid"})
     private String SID;// 主键
-
+    @SerializedName(value = "SenderID", alternate = {"senderID"})
     private String SenderID;// 发送人ID
+    @SerializedName(value = "Title", alternate = {"title"})
     private String Title;// 标题
+    @SerializedName(value = "Body", alternate = {"body"})
     private String Body;//内容
+    @SerializedName(value = "Time", alternate = {"time"})
     private long Time;// 时间
+    @SerializedName(value = "MessageType", alternate = {"messageType"})
     private String MessageType;// 消息类型(文字、图片、文件、链接、音频、视频、表情等)
-    /*--------custom--------*/
-    private String NickName;// 真实姓名
-    private String HeadPortrait;// 头像
-    private String ChatID;// 会话ID
-    private String Thumbnail;//缩略图
-    private String Original;//原图
 
+    /*--------custom--------*/
+    @SerializedName(value = "NickName", alternate = {"nickName"})
+    private String NickName;// 真实姓名
+    @SerializedName(value = "HeadPortrait", alternate = {"headPortrait"})
+    private String HeadPortrait;// 头像
+    @SerializedName(value = "ChatID", alternate = {"chatID"})
+    private String ChatID;// 会话ID
+    @SerializedName(value = "Thumbnail", alternate = {"thumbnail"})
+    private String Thumbnail;//缩略图
+    @SerializedName(value = "Original", alternate = {"original"})
+    private String Original;//原图
+    @SerializedName(value = "SendStatusType", alternate = {"sendStatusType"})
     private int SendStatusType;// 发送状态
 
     /*--------local--------*/
+    @SerializedName(value = "LocalTime", alternate = {"localTime"})
     private long LocalTime;
 
 
@@ -144,6 +157,43 @@ public class ChatMessageModel {
         return false;
 
     }
+
+    public ChatMessageBean toBean(){
+        ChatMessageBean bean = new ChatMessageBean();
+        bean.setSID(getSID());
+        bean.setSenderID(getSenderID());
+        bean.setTitle(getTitle());
+        bean.setBody(getBody());
+        bean.setTime(getTime());
+        bean.setMessageType(getMessageType());
+        bean.setNickName(getNickName());
+        bean.setHeadPortrait(getHeadPortrait());
+        bean.setChatID(getChatID());
+        bean.setThumbnail(getThumbnail());
+        bean.setOriginal(getOriginal());
+        bean.setSendStatusType(getSendStatusType());
+        bean.setLocalTime(getLocalTime());
+        return bean;
+    }
+
+    public static ChatMessageModel fromBean(ChatMessageBean bean){
+        ChatMessageModel model = new ChatMessageModel();
+        model.setSID(bean.getSID());
+        model.setSenderID(bean.getSenderID());
+        model.setTitle(bean.getTitle());
+        model.setBody(bean.getBody());
+        model.setTime(bean.getTime());
+        model.setMessageType(bean.getMessageType());
+        model.setBody(bean.getBody());
+        model.setHeadPortrait(bean.getHeadPortrait());
+        model.setChatID(bean.getChatID());
+        model.setThumbnail(bean.getThumbnail());
+        model.setOriginal(bean.getOriginal());
+        model.setSendStatusType(bean.getSendStatusType());
+        model.setLocalTime(bean.getLocalTime());
+        return model;
+    }
+
 
     @Override
     public boolean equals(Object obj) {

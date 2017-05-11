@@ -23,31 +23,7 @@ public class SocketIOService extends Service {
 
         Log.e("onStartCommand","onStartCommand");
 
-
-        SocketIOManager.getInstance().connect(this);
-
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                int i = 0;
-//
-//                while (i < 10000) {
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    Boolean flag = BackgroundUtil.isForeground(getApplicationContext());
-//
-//                    Log.e("isForeground", flag + "");
-//
-//                    i++;
-//
-//                }
-//
-//            }
-//        }).start();
+        SocketIOManager.getInstance().connect(getApplicationContext());
 
         return super.onStartCommand(intent, flags, startId);
 

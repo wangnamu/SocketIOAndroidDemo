@@ -27,13 +27,13 @@ public class UserInfoRepository {
 
         if(!preferences.getAll().isEmpty()){
 
-            String sID = preferences.getString("sID", null);
-            String userName = preferences.getString("userName", null);
-            String passWord = preferences.getString("passWord", null);
-            String nickName = preferences.getString("nickName", null);
-            String headPortrait = preferences.getString("headPortrait", null);
-            long loginTime = preferences.getLong("loginTime", 0);
-            boolean inUse = preferences.getBoolean("inUse", false);
+            String sID = preferences.getString("SID", null);
+            String userName = preferences.getString("UserName", null);
+            String passWord = preferences.getString("PassWord", null);
+            String nickName = preferences.getString("NickName", null);
+            String headPortrait = preferences.getString("HeadPortrait", null);
+            long loginTime = preferences.getLong("LoginTime", 0);
+            boolean inUse = preferences.getBoolean("InUse", false);
 
             UserInfoBean userInfoBean = new UserInfoBean();
             userInfoBean.setSID(sID);
@@ -57,13 +57,13 @@ public class UserInfoRepository {
 
         SharedPreferences preferences = context.getSharedPreferences("currentUser",MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("sID",bean.getSID());
-        editor.putString("userName",bean.getUserName());
-        editor.putString("passWord",bean.getPassWord());
-        editor.putString("nickName",bean.getNickName());
-        editor.putString("headPortrait",bean.getHeadPortrait());
-        editor.putLong("loginTime",bean.getLoginTime());
-        editor.putBoolean("inUse",bean.getInUse());
+        editor.putString("SID",bean.getSID());
+        editor.putString("UserName",bean.getUserName());
+        editor.putString("PassWord",bean.getPassWord());
+        editor.putString("NickName",bean.getNickName());
+        editor.putString("HeadPortrait",bean.getHeadPortrait());
+        editor.putLong("LoginTime",bean.getLoginTime());
+        editor.putBoolean("InUse",bean.getInUse());
 
         editor.apply();
     }

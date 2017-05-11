@@ -11,7 +11,7 @@ import com.ufo.socketioandroiddemo.mvp.BaseView;
 public class LoginContract {
 
     interface View extends BaseView {
-        void loginSuccess();
+        void loginSuccess(UserInfoBean userInfoBean);
 
         void loginFail(String errorMessage);
     }

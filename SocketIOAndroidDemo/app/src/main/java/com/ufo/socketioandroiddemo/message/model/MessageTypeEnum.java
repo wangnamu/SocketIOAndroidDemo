@@ -4,7 +4,7 @@ package com.ufo.socketioandroiddemo.message.model;
  * Created by tjpld on 2017/5/9.
  */
 
-public class MessageTypeEnum {
+public final class MessageTypeEnum {
     public static final String Text = "text";
     public static final String Image = "image";
     public static final String File = "file";

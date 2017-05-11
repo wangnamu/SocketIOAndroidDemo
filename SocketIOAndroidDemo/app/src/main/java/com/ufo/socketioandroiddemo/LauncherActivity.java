@@ -8,6 +8,8 @@ import com.ufo.socketioandroiddemo.login.LoginActivity;
 import com.ufo.socketioandroiddemo.login.UserInfoBean;
 import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 import com.ufo.socketioservice.SocketIOService;
+import com.ufo.tools.MyChat;
+import com.ufo.tools.RealmConfig;
 
 public class LauncherActivity extends Activity {
 
@@ -24,6 +26,7 @@ public class LauncherActivity extends Activity {
             startActivity(intent);
         } else {
 
+            RealmConfig.setUp(getApplicationContext(), bean.getUserName());
             getRecent();
             startSocketIOService();
 
@@ -41,7 +44,7 @@ public class LauncherActivity extends Activity {
     }
 
     private void getRecent() {
-
+        MyChat.getInstance().getRecent(getApplicationContext());
     }
 
 }

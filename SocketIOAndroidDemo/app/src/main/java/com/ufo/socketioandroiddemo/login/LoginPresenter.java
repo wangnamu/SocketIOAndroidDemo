@@ -54,7 +54,7 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
 
                         if (resultModel.getSuccess()) {
                             UserInfoRepository.getInstance().login(mView.getContext(),resultModel.getData());
-                            mView.loginSuccess();
+                            mView.loginSuccess(resultModel.getData());
                         }
                         else {
                             mView.loginFail(resultModel.getErrorMessage());

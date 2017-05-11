@@ -48,4 +48,10 @@ public abstract class MVPBaseActivity<V extends BaseView,T extends BasePresenter
         }
         return null;
     }
+
+
+    @Override
+    public Context getAppContext() {
+        return getApplicationContext();
+    }
 }

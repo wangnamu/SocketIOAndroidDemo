@@ -19,5 +19,6 @@ public class BackgroundUtil {
     private static boolean getApplicationValue(MyApplication myApplication) {
         return myApplication.getAppCount() > 0;
     }
+
 }
 

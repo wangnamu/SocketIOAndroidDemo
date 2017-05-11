@@ -1,74 +1,83 @@
 package com.ufo.socketioandroiddemo.login;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by tjpld on 2017/5/5.
  */
 
 public class UserInfoBean {
 
-    private String sid;// 主键
-    private String userName;// 用户名
-    private String passWord;// 密码
-    private String nickName;// 昵称
-    private String headPortrait;// 头像
-    private  long loginTime;// 最近一次登录时间
-    private Boolean inUse;// 正在使用
+    @SerializedName(value = "SID", alternate = {"sid"})
+    private String SID;// 主键
+    @SerializedName(value = "UserName", alternate = {"userName"})
+    private String UserName;// 用户名
+    @SerializedName(value = "PassWord", alternate = {"passWord"})
+    private String PassWord;// 密码
+    @SerializedName(value = "NickName", alternate = {"nickName"})
+    private String NickName;// 昵称
+    @SerializedName(value = "HeadPortrait", alternate = {"headPortrait"})
+    private String HeadPortrait;// 头像
+    @SerializedName(value = "LoginTime", alternate = {"loginTime"})
+    private  long LoginTime;// 最近一次登录时间
+    @SerializedName(value = "InUse", alternate = {"inUse"})
+    private Boolean InUse;// 正在使用
 
 
     public String getSID() {
-        return sid;
+        return SID;
     }
 
-    public void setSID(String sid) {
-        this.sid = sid;
+    public void setSID(String SID) {
+        this.SID = SID;
     }
 
     public String getUserName() {
-        return userName;
+        return UserName;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        UserName = userName;
     }
 
     public String getPassWord() {
-        return passWord;
+        return PassWord;
     }
 
     public void setPassWord(String passWord) {
-        this.passWord = passWord;
+        PassWord = passWord;
     }
 
     public String getNickName() {
-        return nickName;
+        return NickName;
     }
 
     public void setNickName(String nickName) {
-        this.nickName = nickName;
+        NickName = nickName;
     }
 
     public String getHeadPortrait() {
-        return headPortrait;
+        return HeadPortrait;
     }
 
     public void setHeadPortrait(String headPortrait) {
-        this.headPortrait = headPortrait;
+        HeadPortrait = headPortrait;
     }
 
     public long getLoginTime() {
-        return loginTime;
+        return LoginTime;
     }
 
     public void setLoginTime(long loginTime) {
-        this.loginTime = loginTime;
+        LoginTime = loginTime;
     }
 
     public Boolean getInUse() {
-        return inUse;
+        return InUse;
     }
 
     public void setInUse(Boolean inUse) {
-        this.inUse = inUse;
+        InUse = inUse;
     }
 
 
