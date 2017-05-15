@@ -66,7 +66,6 @@ public class ContactFragment extends MVPBaseFragment<ContactContract.View, Conta
 
     };
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,9 +82,7 @@ public class ContactFragment extends MVPBaseFragment<ContactContract.View, Conta
 
         initControl(view);
 
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(NotificationAction.Update_Contact);            //添加动态广播的Action
-        getContext().registerReceiver(mReceiver, intentFilter);
+        getContext().registerReceiver(mReceiver, new IntentFilter(NotificationAction.Update_Contact));
 
         mPresenter.loadData();
 
@@ -119,7 +116,10 @@ public class ContactFragment extends MVPBaseFragment<ContactContract.View, Conta
         mAdapter.setRecyclerViewItemListener(new RecyclerViewItemListener() {
             @Override
             public void onItemClick(View view, int position) {
-
+                Intent intent = new Intent(getContext(),ChatMessageActivity.class);
+                intent.putExtra("ChatID",mDataSource.get(position).getSID());
+                intent.putExtra("Name",mDataSource.get(position).getName());
+                startActivity(intent);
             }
         });
 
@@ -128,7 +128,10 @@ public class ContactFragment extends MVPBaseFragment<ContactContract.View, Conta
     }
 
 
-    static class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
+    /**
+     * Adapter
+     */
+    private static class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         private List<ChatModel> mData;
         private Context mContext;
@@ -181,7 +184,7 @@ public class ContactFragment extends MVPBaseFragment<ContactContract.View, Conta
         }
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    private static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView img;
         TextView text;
@@ -194,7 +197,7 @@ public class ContactFragment extends MVPBaseFragment<ContactContract.View, Conta
 
     }
 
-    public interface RecyclerViewItemListener {
+    private interface RecyclerViewItemListener {
         void onItemClick(View view, int position);
     }
 

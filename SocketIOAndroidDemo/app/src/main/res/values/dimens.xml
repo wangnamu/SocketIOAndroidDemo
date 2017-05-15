@@ -4,4 +4,15 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
+
+
+    <!-- Chat -->
+    <dimen name="chat_headPortrait_width">40dp</dimen>
+    <dimen name="chat_content_margin">10dp</dimen>
+    <dimen name="chat_content_min_height">40dp</dimen>
+    <dimen name="chat_progress_width">24dp</dimen>
+    <dimen name="chat_item_radius">8dp</dimen>
+
+    <dimen name="button_border_less_margin">-8dp</dimen>
+
 </resources>

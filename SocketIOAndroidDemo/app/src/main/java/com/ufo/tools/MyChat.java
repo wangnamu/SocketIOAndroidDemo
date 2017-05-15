@@ -50,7 +50,7 @@ public class MyChat {
 
                 Intent intentSendMessage = new Intent(NotificationAction.Send_Message);
 
-                //intentSendMessage.putExtra("model",model);
+                intentSendMessage.putExtra("model",model);
 
                 context.sendBroadcast(intentSendMessage);
 
@@ -100,7 +100,7 @@ public class MyChat {
 
                 Intent intentReceiveMessage = new Intent(NotificationAction.Receive_Message);
 
-                //intentReceiveMessage.putExtra("model",model);
+                intentReceiveMessage.putExtra("model",model);
 
                 context.sendBroadcast(intentReceiveMessage);
 
@@ -144,7 +144,8 @@ public class MyChat {
                     chatListSycResult = messageAPI.chatListSyc(UserInfoRepository.getInstance().currentUser(context).getSID(),
                             last, current).execute().body();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
+                    return;
                 }
 
                 for (ChatModel chatModel : chatListSycResult) {
@@ -157,7 +158,7 @@ public class MyChat {
                 if (chatMessageBeans.size() > 0) {
                     last = chatMessageBeans.first().getTime();
                 } else {
-                    last = System.currentTimeMillis();
+                    last = UserInfoRepository.getInstance().currentUser(context).getLoginTime();
                 }
 
 
@@ -167,7 +168,8 @@ public class MyChat {
                     chatMessageListSycResult = messageAPI.chatMessageListSyc(UserInfoRepository.getInstance().currentUser(context).getSID(),
                             last, current).execute().body();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
+                    return;
                 }
 
                 for (ChatMessageModel chatMessageModel : chatMessageListSycResult) {

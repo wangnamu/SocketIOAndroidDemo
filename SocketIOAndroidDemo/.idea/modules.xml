@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/SocketIOAndroidDemo.iml" filepath="$PROJECT_DIR$/SocketIOAndroidDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/retrofitextend/retrofitextend.iml" filepath="$PROJECT_DIR$/retrofitextend/retrofitextend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xhsEmoticonsKeyboard/xhsEmoticonsKeyboard.iml" filepath="$PROJECT_DIR$/xhsEmoticonsKeyboard/xhsEmoticonsKeyboard.iml" />
     </modules>
   </component>
 </project>

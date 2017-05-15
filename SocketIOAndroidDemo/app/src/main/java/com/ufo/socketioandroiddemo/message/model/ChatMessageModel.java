@@ -2,6 +2,8 @@ package com.ufo.socketioandroiddemo.message.model;
 
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 import com.ufo.socketioandroiddemo.login.UserInfoRepository;
@@ -10,7 +12,7 @@ import com.ufo.socketioandroiddemo.login.UserInfoRepository;
  * Created by tjpld on 2017/5/9.
  */
 
-public class ChatMessageModel {
+public class ChatMessageModel implements Parcelable {
 
     @SerializedName(value = "SID", alternate = {"sid"})
     private String SID;// 主键
@@ -158,7 +160,7 @@ public class ChatMessageModel {
 
     }
 
-    public ChatMessageBean toBean(){
+    public ChatMessageBean toBean() {
         ChatMessageBean bean = new ChatMessageBean();
         bean.setSID(getSID());
         bean.setSenderID(getSenderID());
@@ -176,7 +178,7 @@ public class ChatMessageModel {
         return bean;
     }
 
-    public static ChatMessageModel fromBean(ChatMessageBean bean){
+    public static ChatMessageModel fromBean(ChatMessageBean bean) {
         ChatMessageModel model = new ChatMessageModel();
         model.setSID(bean.getSID());
         model.setSenderID(bean.getSenderID());
@@ -196,7 +198,74 @@ public class ChatMessageModel {
 
 
     @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(SID);
+        dest.writeString(SenderID);
+        dest.writeString(Title);
+        dest.writeString(Body);
+        dest.writeLong(Time);
+        dest.writeString(MessageType);
+        dest.writeString(NickName);
+        dest.writeString(HeadPortrait);
+        dest.writeString(ChatID);
+        dest.writeString(Thumbnail);
+        dest.writeString(Original);
+        dest.writeInt(SendStatusType);
+        dest.writeLong(LocalTime);
+    }
+
+
+    public static final Creator<ChatMessageModel> CREATOR = new Creator<ChatMessageModel>() {
+        @Override
+        public ChatMessageModel createFromParcel(Parcel source) {
+            ChatMessageModel chatMessageModel = new ChatMessageModel();
+
+            chatMessageModel.setSID(source.readString());
+            chatMessageModel.setSenderID(source.readString());
+            chatMessageModel.setTitle(source.readString());
+            chatMessageModel.setBody(source.readString());
+            chatMessageModel.setTime(source.readLong());
+            chatMessageModel.setMessageType(source.readString());
+            chatMessageModel.setNickName(source.readString());
+            chatMessageModel.setHeadPortrait(source.readString());
+            chatMessageModel.setChatID(source.readString());
+            chatMessageModel.setThumbnail(source.readString());
+            chatMessageModel.setOriginal(source.readString());
+            chatMessageModel.setSendStatusType(source.readInt());
+            chatMessageModel.setLocalTime(source.readLong());
+
+            return chatMessageModel;
+        }
+
+        @Override
+        public ChatMessageModel[] newArray(int size) {
+            return new ChatMessageModel[size];
+        }
+    };
+
+
+    @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+
+        if (this == obj) {
+            return true;
+        }
+
+        if (!obj.getClass().equals(this.getClass())) {
+            return false;
+        }
+
+        ChatMessageModel myObject = (ChatMessageModel) obj;
+        if (this.getSID().equals(myObject.getSID())) {
+            return true;
+        }
+
+        return false;
+
     }
 }

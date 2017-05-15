@@ -6,7 +6,10 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.ufo.socketioandroiddemo.login.UserInfoBean;
 import com.ufo.socketioandroiddemo.login.UserInfoRepository;
+import com.ufo.socketioandroiddemo.message.model.ChatMessageModel;
+import com.ufo.socketioservice.model.SocketIOMessage;
 import com.ufo.socketioservice.model.SocketIOUserInfo;
+import com.ufo.tools.MyChat;
 import com.ufo.utils.BackgroundUtil;
 
 import java.net.URISyntaxException;
@@ -28,6 +31,10 @@ public class SocketIOManager {
     private static final String LOGIN = "login";
     private static final String EVENT_KICKOFF = "kickoff";
     private static final String EVENT_NEWS = "news";
+
+
+    private static final String OthersTypeChat = "chat";
+    private static final String OthersTypeMessage = "message";
 
 
     private static final SocketIOManager shareInstance = new SocketIOManager();
@@ -122,18 +129,22 @@ public class SocketIOManager {
                     ack.call("success");
                 }
 
+                Log.e("onNews->", args[0].toString());
+
                 Gson gson = new Gson();
 
+                SocketIOMessage message = gson.fromJson(args[0].toString(), SocketIOMessage.class);
 
                 if (BackgroundUtil.isForeground(context)) {
+
+                    if (message.getOthersType().equals(OthersTypeMessage)) {
+                        ChatMessageModel chatMessageModel = gson.fromJson(gson.toJson(message.getOthers()), ChatMessageModel.class);
+                        MyChat.getInstance().receiveChatMessage(context, chatMessageModel);
+                    }
 
                 } else {
 
                 }
-
-
-
-                Log.e("onNews->", args[0].toString());
 
             }
         });

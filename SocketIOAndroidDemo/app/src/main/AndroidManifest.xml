@@ -35,6 +35,8 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main">
         </activity>
+        <activity android:name=".message.view.ChatMessageActivity">
+        </activity>
     </application>
 
 </manifest>

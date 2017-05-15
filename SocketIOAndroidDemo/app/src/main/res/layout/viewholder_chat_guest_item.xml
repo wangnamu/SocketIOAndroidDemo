@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
+
+    <TextView
+        android:id="@+id/recycler_view_chat_guest_item_top_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/colorSecondaryText"
+        android:textSize="12sp"
+        android:visibility="gone"/>
+
+
+    <RelativeLayout
+        android:id="@+id/recycler_view_chat_guest_item_center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recycler_view_chat_guest_item_top_time">
+
+        <ImageView
+            android:id="@+id/recycler_view_chat_guest_item_headPortrait"
+            android:layout_width="@dimen/chat_headPortrait_width"
+            android:layout_height="@dimen/chat_headPortrait_width"
+            android:layout_alignParentLeft="true"/>
+
+        <RelativeLayout
+            android:id="@+id/recycler_view_chat_guest_item_field_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/recycler_view_chat_guest_item_headPortrait">
+
+            <TextView
+                android:id="@+id/recycler_view_chat_guest_item_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/chat_content_margin"
+                android:background="@drawable/bg_item_chat_guest"
+                android:gravity="center_vertical"
+                android:lineSpacingExtra="2dp"
+                android:minHeight="@dimen/chat_content_min_height"
+                android:paddingBottom="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="8dp"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"/>
+
+            <ProgressBar
+                android:id="@+id/recycler_view_chat_guest_item_content_progressbar"
+                android:layout_width="@dimen/chat_progress_width"
+                android:layout_height="@dimen/chat_progress_width"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dp"
+                android:layout_toRightOf="@+id/recycler_view_chat_guest_item_text"
+                android:visibility="gone"/>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/recycler_view_chat_guest_item_field_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/recycler_view_chat_guest_item_headPortrait">
+
+
+            <ImageView
+                android:id="@+id/recycler_view_chat_guest_item_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/chat_content_margin"
+                android:gravity="center_vertical"
+                android:minHeight="@dimen/chat_content_min_height"/>
+
+            <ProgressBar
+                android:id="@+id/recycler_view_chat_guest_item_image_progressbar"
+                android:layout_width="@dimen/chat_progress_width"
+                android:layout_height="@dimen/chat_progress_width"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dp"
+                android:layout_toRightOf="@+id/recycler_view_chat_guest_item_image"
+                android:visibility="gone"/>
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/recycler_view_chat_guest_item_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recycler_view_chat_guest_item_center"
+        android:layout_marginLeft="66dp"
+        android:layout_marginTop="4dp"
+        android:gravity="left"
+        android:textSize="10sp"
+        android:visibility="gone"/>
+
+</RelativeLayout>

@@ -16,7 +16,9 @@ public class ContactContract {
 
     public interface View extends BaseView {
         Handler getHandler();
+
         List<ChatModel> getDataSource();
+
         void refreshData();
     }
 

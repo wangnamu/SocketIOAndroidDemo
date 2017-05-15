@@ -1,1 +1,1 @@
-include ':app', ':retrofitextend'
+include ':app', ':retrofitextend','xhsEmoticonsKeyboard'

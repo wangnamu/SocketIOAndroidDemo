@@ -1,12 +1,15 @@
 package com.ufo.socketioandroiddemo.message.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by tjpld on 2017/5/9.
  */
 
-public class ChatModel {
+public class ChatModel implements Parcelable {
 
     @SerializedName(value = "SID", alternate = {"sid"})
     private String SID;
@@ -101,7 +104,7 @@ public class ChatModel {
         DisplayInRecently = displayInRecently;
     }
 
-    public ChatBean toBean(){
+    public ChatBean toBean() {
 
         ChatBean bean = new ChatBean();
         bean.setSID(getSID());
@@ -116,7 +119,7 @@ public class ChatModel {
         return bean;
     }
 
-    public static ChatModel fromBean(ChatBean bean){
+    public static ChatModel fromBean(ChatBean bean) {
         ChatModel model = new ChatModel();
         model.setSID(bean.getSID());
         model.setUsers(bean.getUsers());
@@ -130,5 +133,48 @@ public class ChatModel {
         return model;
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(SID);
+        dest.writeString(Users);
+        dest.writeString(Name);
+        dest.writeString(Img);
+        dest.writeLong(Time);
+        dest.writeLong(CreateTime);
+        dest.writeString(Body);
+        dest.writeString(ChatType);
+        dest.writeByte((byte) (DisplayInRecently ? 1 : 0));
+    }
+
+
+    public static final Creator<ChatModel> CREATOR = new Creator<ChatModel>() {
+        @Override
+        public ChatModel createFromParcel(Parcel source) {
+            ChatModel chatModel = new ChatModel();
+
+            chatModel.setSID(source.readString());
+            chatModel.setUsers(source.readString());
+            chatModel.setName(source.readString());
+            chatModel.setImg(source.readString());
+            chatModel.setTime(source.readLong());
+            chatModel.setCreateTime(source.readLong());
+            chatModel.setBody(source.readString());
+            chatModel.setChatType(source.readString());
+            chatModel.setDisplayInRecently(source.readByte() != 0);
+
+            return chatModel;
+        }
+
+        @Override
+        public ChatModel[] newArray(int size) {
+            return new ChatModel[size];
+        }
+    };
 
 }
