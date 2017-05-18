@@ -1,15 +1,17 @@
 package com.ufo.socketioandroiddemo.message.api;
 
-import com.ufo.model.ResultModel;
-import com.ufo.socketioandroiddemo.login.UserInfoBean;
 import com.ufo.socketioandroiddemo.message.model.ChatMessageModel;
 import com.ufo.socketioandroiddemo.message.model.ChatModel;
 
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
+import rx.Observable;
 
 
 /**
@@ -30,4 +32,12 @@ public interface MessageAPI {
              @Query("last") long last,
              @Query("current") long current);
 
+
+    @FormUrlEncoded
+    @POST("sendText")
+    Observable<ChatMessageModel> sendTextAsyc
+            (@Field("chatID") String chatID,
+             @Field("body") String body,
+             @Field("messageID") String messageID,
+             @Field("senderID") String senderID);
 }

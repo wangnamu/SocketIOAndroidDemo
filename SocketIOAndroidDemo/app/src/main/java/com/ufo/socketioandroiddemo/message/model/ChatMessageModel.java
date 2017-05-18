@@ -46,6 +46,10 @@ public class ChatMessageModel implements Parcelable {
     private long LocalTime;
 
 
+    public ChatMessageModel() {
+        this.SendStatusType = SendStatusTypeEnum.Sended;
+    }
+
     public String getSID() {
         return SID;
     }

@@ -15,7 +15,6 @@ public class MyApplication extends Application {
 
     private int appCount = 0;
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -26,7 +25,7 @@ public class MyApplication extends Application {
         }
 
         //注册baseUrl
-        RetrofitExtendFactory.initWithBaseUrl("http://192.168.19.211:8080/NettySocketioWebDemo/");
+        RetrofitExtendFactory.initWithBaseUrl("http://192.168.19.96:8080/NettySocketioWebDemo/");
 
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {

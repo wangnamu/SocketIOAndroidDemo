@@ -18,7 +18,7 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
     @Override
     public void login(String username, String password) {
 
-        Retrofit retrofit = RetrofitExtendFactory.createNormalRetrofit(mView.getContext());
+        Retrofit retrofit = RetrofitExtendFactory.createNormalRetrofit(mView.getAppContext());
         LoginAPI loginAPI = retrofit.create(LoginAPI.class);
 
         Subscription subscription = loginAPI.doLogin(username, password)
@@ -53,7 +53,7 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
                     public void onNext(ResultModel<UserInfoBean> resultModel) {
 
                         if (resultModel.getSuccess()) {
-                            UserInfoRepository.getInstance().login(mView.getContext(),resultModel.getData());
+                            UserInfoRepository.getInstance().login(mView.getAppContext(),resultModel.getData());
                             mView.loginSuccess(resultModel.getData());
                         }
                         else {

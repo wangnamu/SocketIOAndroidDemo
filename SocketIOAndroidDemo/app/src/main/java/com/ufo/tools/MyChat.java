@@ -195,7 +195,7 @@ public class MyChat {
     }
 
 
-    interface sendChatMessageCallback {
+    public interface sendChatMessageCallback {
         void send(ChatMessageModel chatMessageModel);
     }
 

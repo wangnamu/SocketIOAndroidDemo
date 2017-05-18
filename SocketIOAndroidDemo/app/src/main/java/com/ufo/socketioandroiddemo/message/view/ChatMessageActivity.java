@@ -1,5 +1,9 @@
 package com.ufo.socketioandroiddemo.message.view;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -18,6 +22,7 @@ import com.ufo.socketioandroiddemo.message.contract.ChatMessageContract;
 import com.ufo.socketioandroiddemo.message.model.ChatMessageModel;
 import com.ufo.socketioandroiddemo.message.presenter.ChatMessagePresenter;
 import com.ufo.socketioandroiddemo.mvp.MVPBaseActivity;
+import com.ufo.tools.NotificationAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +49,22 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
     private Handler mHandler;
 
 
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(NotificationAction.Send_Message)) {
+                onNotifySend(intent);
+            } else if (intent.getAction().equals(NotificationAction.Receive_Message)) {
+                onNotifyReceive(intent);
+            } else if (intent.getAction().equals(NotificationAction.Get_Recent_Finish)) {
+                reloadData();
+            }
+        }
+
+    };
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,9 +85,22 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
 
         initControl();
 
+        getContext().registerReceiver(mReceiver, new IntentFilter(NotificationAction.Send_Message));
+        getContext().registerReceiver(mReceiver, new IntentFilter(NotificationAction.Receive_Message));
+        getContext().registerReceiver(mReceiver, new IntentFilter(NotificationAction.Get_Recent_Finish));
+
+
         reloadData();
 
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getContext().unregisterReceiver(mReceiver);
+    }
+
 
     private void initControl() {
 
@@ -76,8 +110,6 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
         //mAdapter.setChatTooltipsItemClickListener(this);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        //layoutManager.setStackFromEnd(true);
-
 
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -103,7 +135,9 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
         mEkBar.getImageButtonSend().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //sendText();
+                String body = mEkBar.getEtChat().getText().toString().trim();
+                mPresenter.sendText(body,mCurrentChatID);
+                mEkBar.getEtChat().getText().clear();
             }
         });
 
@@ -115,7 +149,11 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
                 if (actionId == EditorInfo.IME_ACTION_SEND
                         || actionId == EditorInfo.IME_ACTION_DONE
                         || (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode() && KeyEvent.ACTION_DOWN == event.getAction())) {
-                    //sendText();
+
+                    String body = mEkBar.getEtChat().getText().toString().trim();
+                    mPresenter.sendText(body,mCurrentChatID);
+                    mEkBar.getEtChat().getText().clear();
+
                 }
                 return true;
             }
@@ -125,14 +163,20 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
     }
 
 
-    private void scrollToPosition(final int position) {
-        mRecyclerView.requestLayout();
-        mRecyclerView.post(new Runnable() {
-            @Override
-            public void run() {
-                mRecyclerView.smoothScrollToPosition(position);
-            }
-        });
+    private void scrollToPosition(int position) {
+        mRecyclerView.smoothScrollToPosition(position);
+    }
+
+    private void scrollToBottom(boolean animated) {
+
+        if (mDataSource.size() - 1 < 0)
+            return;
+
+        if (animated)
+            mRecyclerView.smoothScrollToPosition(mDataSource.size() - 1);
+        else
+            mRecyclerView.scrollToPosition(mDataSource.size() - 1);
+
     }
 
 
@@ -164,6 +208,23 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
     }
 
 
+    /**
+     * notification
+     */
+
+    private void onNotifySend(Intent intent) {
+        ChatMessageModel model = (ChatMessageModel) intent.getExtras().get("model");
+        if (model != null && model.getChatID().equals(mCurrentChatID)) {
+            mPresenter.updateChatMessage(model);
+        }
+    }
+
+    private void onNotifyReceive(Intent intent) {
+        ChatMessageModel model = (ChatMessageModel) intent.getExtras().get("model");
+        if (model != null && model.getChatID().equals(mCurrentChatID)) {
+            mPresenter.insertChatMessage(model);
+        }
+    }
 
 
     /**
@@ -184,19 +245,18 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
     @Override
     public void reloadDataComplete() {
         mAdapter.notifyDataSetChanged();
-        //scrollToPosition();
+        scrollToBottom(false);
     }
 
     @Override
     public void loadMoreDataComplete() {
+
     }
 
     @Override
     public void updateChatMessageCell() {
-
         mAdapter.notifyDataSetChanged();
-        //scrollToPosition();
-
+        scrollToBottom(true);
     }
 
 
@@ -204,7 +264,6 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
     public void reloadData() {
         mPresenter.reloadDataWithChatID(mCurrentChatID);
     }
-
 
 
     private void loadMoreData() {

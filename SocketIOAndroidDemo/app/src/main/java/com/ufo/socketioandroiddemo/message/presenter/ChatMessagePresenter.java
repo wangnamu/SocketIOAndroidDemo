@@ -1,14 +1,30 @@
 package com.ufo.socketioandroiddemo.message.presenter;
 
+import com.ufo.model.ResultModel;
+import com.ufo.retrofitextend.RetrofitExtendFactory;
+import com.ufo.socketioandroiddemo.login.LoginAPI;
+import com.ufo.socketioandroiddemo.login.UserInfoBean;
+import com.ufo.socketioandroiddemo.login.UserInfoRepository;
+import com.ufo.socketioandroiddemo.message.api.MessageAPI;
 import com.ufo.socketioandroiddemo.message.contract.ChatMessageContract;
 import com.ufo.socketioandroiddemo.message.model.ChatMessageBean;
 import com.ufo.socketioandroiddemo.message.model.ChatMessageModel;
+import com.ufo.socketioandroiddemo.message.model.MessageTypeEnum;
+import com.ufo.socketioandroiddemo.message.model.SendStatusTypeEnum;
 import com.ufo.socketioandroiddemo.message.repository.ChatMessageRepository;
 import com.ufo.socketioandroiddemo.mvp.BasePresenterImpl;
+import com.ufo.tools.MyChat;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import io.realm.RealmResults;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.HttpException;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by tjpld on 2017/5/9.
@@ -88,7 +104,7 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
             public void run() {
                 if (mView.getDataSource().size() > 0 && mView.getDataSource().contains(model)) {
                     int index = mView.getDataSource().indexOf(model);
-                    Collections.replaceAll(mView.getDataSource(),mView.getDataSource().get(index),model);
+                    Collections.replaceAll(mView.getDataSource(), mView.getDataSource().get(index), model);
                     mView.updateChatMessageCell();
                 }
             }
@@ -99,6 +115,71 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
 
     @Override
     public void sendText(String body, String chatID) {
+
+        String messageID = UUID.randomUUID().toString();
+        final ChatMessageModel model = new ChatMessageModel();
+        model.setSID(messageID);
+        model.setSenderID(UserInfoRepository.getInstance().currentUser(mView.getAppContext()).getSID());
+        model.setTitle(UserInfoRepository.getInstance().currentUser(mView.getAppContext()).getNickName());
+        model.setBody(body);
+        model.setTime(System.currentTimeMillis());
+        model.setMessageType(MessageTypeEnum.Text);
+        model.setNickName(UserInfoRepository.getInstance().currentUser(mView.getAppContext()).getNickName());
+        model.setHeadPortrait(UserInfoRepository.getInstance().currentUser(mView.getAppContext()).getHeadPortrait());
+        model.setChatID(chatID);
+        model.setSendStatusType(SendStatusTypeEnum.Sending);
+
+        MyChat.getInstance().sendChatMessage(mView.getAppContext(), model, new MyChat.sendChatMessageCallback() {
+            @Override
+            public void send(ChatMessageModel chatMessageModel) {
+                insertChatMessage(model);
+            }
+        });
+
+
+        Retrofit retrofit = RetrofitExtendFactory.createNormalRetrofit(mView.getAppContext());
+        MessageAPI messageAPI = retrofit.create(MessageAPI.class);
+
+        Subscription subscription = messageAPI.sendTextAsyc(chatID, body, messageID, UserInfoRepository.getInstance().currentUser(mView.getAppContext()).getSID())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ChatMessageModel>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+//                        String errorMessage;
+//
+//                        if (e instanceof HttpException) {
+//                            HttpException httpException = (HttpException) e;
+//                            int code = httpException.code();
+//                            String msg = httpException.getMessage();
+//
+//                            errorMessage = code + " " + msg;
+//
+//                        } else {
+//                            errorMessage = e.getMessage();
+//                        }
+
+
+                    }
+
+                    @Override
+                    public void onNext(ChatMessageModel chatMessageModel) {
+                        chatMessageModel.setSendStatusType(SendStatusTypeEnum.Sended);
+                        if (mView != null) {
+                            MyChat.getInstance().updateChatMessage(mView.getAppContext(), chatMessageModel);
+                        }
+
+                    }
+                });
+
+        addSubscription(subscription);
 
     }
 

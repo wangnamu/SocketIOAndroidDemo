@@ -18,7 +18,6 @@ import com.ufo.socketioandroiddemo.message.model.SendStatusTypeEnum;
 import com.ufo.utils.DateUtil;
 import com.ufo.utils.ScreenUtil;
 
-import java.text.ParseException;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
