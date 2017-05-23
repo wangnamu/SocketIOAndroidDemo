@@ -4,6 +4,7 @@ package com.ufo.socketioandroiddemo.message.model;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
 import com.ufo.socketioandroiddemo.login.UserInfoRepository;
@@ -190,7 +191,7 @@ public class ChatMessageModel implements Parcelable {
         model.setBody(bean.getBody());
         model.setTime(bean.getTime());
         model.setMessageType(bean.getMessageType());
-        model.setBody(bean.getBody());
+        model.setNickName(bean.getNickName());
         model.setHeadPortrait(bean.getHeadPortrait());
         model.setChatID(bean.getChatID());
         model.setThumbnail(bean.getThumbnail());
@@ -253,23 +254,19 @@ public class ChatMessageModel implements Parcelable {
     };
 
 
+
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object o) {
 
-        if (this == obj) {
-            return true;
-        }
-
-        if (!obj.getClass().equals(this.getClass())) {
+        if (o == this) return true;
+        if (!(o instanceof ChatMessageModel)) {
             return false;
         }
 
-        ChatMessageModel myObject = (ChatMessageModel) obj;
-        if (this.getSID().equals(myObject.getSID())) {
-            return true;
-        }
+        ChatMessageModel chatMessageModel = (ChatMessageModel) o;
 
-        return false;
-
+        return SID.equals(chatMessageModel.getSID());
     }
+
+
 }

@@ -33,6 +33,7 @@ public class HostViewHolder extends RecyclerView.ViewHolder {
     public ImageView mHeadPortrait;
     public ImageView mImage;
     public TextView mContent;
+    public TextView mName;
     public TextView mTopTime;
     public TextView mItemMsg;
     public ProgressBar mContentProgressBar;
@@ -47,6 +48,7 @@ public class HostViewHolder extends RecyclerView.ViewHolder {
         mHeadPortrait = (ImageView) itemView.findViewById(R.id.recycler_view_chat_host_item_headPortrait);
         mImage = (ImageView) itemView.findViewById(R.id.recycler_view_chat_host_item_image);
 
+        mName = (TextView) itemView.findViewById(R.id.recycler_view_chat_host_item_name);
         mContent = (TextView) itemView.findViewById(R.id.recycler_view_chat_host_item_text);
         mTopTime = (TextView) itemView.findViewById(R.id.recycler_view_chat_host_item_top_time);
         mItemMsg = (TextView) itemView.findViewById(R.id.recycler_view_chat_host_item_msg);
@@ -72,6 +74,8 @@ public class HostViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setHolder(Context context, ChatMessageModel chatMessageModel) {
+
+        mName.setText(chatMessageModel.getNickName());
 
         if (chatMessageModel.getMessageType().equals(MessageTypeEnum.Text)) {
 

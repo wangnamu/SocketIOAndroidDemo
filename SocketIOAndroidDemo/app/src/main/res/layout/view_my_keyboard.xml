@@ -8,14 +8,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:background="@drawable/bg_bottom_chat"
-        android:paddingBottom="2dp"
-        android:paddingTop="2dp">
+        android:layout_alignParentBottom="true"
+        android:padding="8dp">
 
         <ImageButton
             android:id="@+id/btn_other"
@@ -23,11 +18,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
             android:background="@android:color/transparent"
-            android:paddingBottom="4dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="4dp"
             android:src="@drawable/ic_add_24dp"/>
 
 
@@ -38,10 +31,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@android:color/transparent"
-            android:paddingBottom="4dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="4dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
             android:src="@drawable/ic_send_24dp"/>
 
 
@@ -51,16 +42,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
             android:layout_toLeftOf="@+id/btn_send"
             android:layout_toRightOf="@+id/btn_other"
-            android:background="@color/colorIcons"
+            android:background="@drawable/bg_bottom_edit"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:gravity="center_vertical"
-            android:hint="发送消息..."
             android:lineSpacingExtra="4dp"
             android:maxLines="4"
-            android:minHeight="46dp"
+            android:minHeight="36dp"
             android:padding="2dp"
             android:textSize="14sp"/>
 

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -12,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -65,6 +67,22 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
     };
 
 
+    private ViewTreeObserver.OnGlobalLayoutListener mOnGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+
+            if (mRecyclerView.computeVerticalScrollRange() >= mRecyclerView.getHeight()) {
+                linearLayoutManager.setStackFromEnd(true);
+            } else {
+                linearLayoutManager.setStackFromEnd(false);
+            }
+
+        }
+    };
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +118,29 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
         super.onDestroy();
         getContext().unregisterReceiver(mReceiver);
     }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(mOnGlobalLayoutListener);
+
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mEkBar.reset();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(mOnGlobalLayoutListener);
+        } else {
+            mRecyclerView.getViewTreeObserver().removeGlobalOnLayoutListener(mOnGlobalLayoutListener);
+        }
+    }
+
+
 
 
     private void initControl() {

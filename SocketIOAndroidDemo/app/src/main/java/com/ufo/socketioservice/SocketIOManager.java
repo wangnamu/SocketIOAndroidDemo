@@ -26,7 +26,7 @@ import io.socket.emitter.Emitter;
 public class SocketIOManager {
 
     private Socket mSocket;
-    private static final String mUrl = "http://192.168.19.96:3000";
+    private static final String mUrl = "http://192.168.19.211:3000";
 
     private static final String LOGIN = "login";
     private static final String EVENT_KICKOFF = "kickoff";

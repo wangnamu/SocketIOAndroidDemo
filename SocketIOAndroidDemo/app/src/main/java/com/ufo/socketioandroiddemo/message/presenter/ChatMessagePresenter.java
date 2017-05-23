@@ -1,9 +1,6 @@
 package com.ufo.socketioandroiddemo.message.presenter;
 
-import com.ufo.model.ResultModel;
 import com.ufo.retrofitextend.RetrofitExtendFactory;
-import com.ufo.socketioandroiddemo.login.LoginAPI;
-import com.ufo.socketioandroiddemo.login.UserInfoBean;
 import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 import com.ufo.socketioandroiddemo.message.api.MessageAPI;
 import com.ufo.socketioandroiddemo.message.contract.ChatMessageContract;
@@ -15,12 +12,10 @@ import com.ufo.socketioandroiddemo.message.repository.ChatMessageRepository;
 import com.ufo.socketioandroiddemo.mvp.BasePresenterImpl;
 import com.ufo.tools.MyChat;
 
-import java.util.Collections;
 import java.util.UUID;
 
 import io.realm.RealmResults;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -104,7 +99,7 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
             public void run() {
                 if (mView.getDataSource().size() > 0 && mView.getDataSource().contains(model)) {
                     int index = mView.getDataSource().indexOf(model);
-                    Collections.replaceAll(mView.getDataSource(), mView.getDataSource().get(index), model);
+                    mView.getDataSource().set(index, model);
                     mView.updateChatMessageCell();
                 }
             }
@@ -128,6 +123,7 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
         model.setHeadPortrait(UserInfoRepository.getInstance().currentUser(mView.getAppContext()).getHeadPortrait());
         model.setChatID(chatID);
         model.setSendStatusType(SendStatusTypeEnum.Sending);
+
 
         MyChat.getInstance().sendChatMessage(mView.getAppContext(), model, new MyChat.sendChatMessageCallback() {
             @Override
