@@ -2,6 +2,7 @@ package com.ufo.socketioandroiddemo.message.view;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,20 +57,24 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        if (viewType == ChatType.Host) {
+        if (viewType == ItemType.Host) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.viewholder_chat_host_item, parent, false);
             HostViewHolder viewHolder = new HostViewHolder(view);
             return viewHolder;
-        } else {
+        } else if (viewType == ItemType.Guest) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.viewholder_chat_guest_item, parent, false);
             GuestViewHolder viewHolder = new GuestViewHolder(view);
             return viewHolder;
+        } else {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.viewholder_loading_item, parent, false);
+            return new LoadingViewHolder(view);
         }
 
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+
         if (holder instanceof HostViewHolder) {
 
             HostViewHolder viewHolder = (HostViewHolder) holder;
@@ -163,6 +168,9 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
 //                }
 //            });
 
+        } else {
+            LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
+            loadingViewHolder.mProgressBar.setIndeterminate(true);
         }
 
     }
@@ -183,13 +191,16 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        return mData == null ? 0 : mData.size();
     }
 
 
     @Override
     public int getItemViewType(int position) {
-        return mData.get(position).isHost(mContext) ? ChatType.Host : ChatType.Guest;
+        if (mData.get(position) == null) {
+            return ItemType.Loading;
+        }
+        return mData.get(position).isHost(mContext) ? ItemType.Host : ItemType.Guest;
     }
 
 
@@ -206,8 +217,9 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
         void delItem(ChatMessageModel chatMessageModel);
     }
 
-    private class ChatType {
+    private class ItemType {
         public static final int Host = 0;
         public static final int Guest = 1;
+        public static final int Loading = 2;
     }
 }

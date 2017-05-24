@@ -31,6 +31,10 @@ public class ChatMessageContract {
 
     public interface Presenter extends BasePresenter<ChatMessageContract.View> {
 
+        void initExecutorService();
+
+        void shutDownExecutorService();
+
         void loadMoreDataWithChatID(String chatID);
 
         void reloadDataWithChatID(String chatID);

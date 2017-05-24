@@ -1,5 +1,7 @@
 package com.ufo.socketioandroiddemo.message.presenter;
 
+import android.util.Log;
+
 import com.ufo.retrofitextend.RetrofitExtendFactory;
 import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 import com.ufo.socketioandroiddemo.message.api.MessageAPI;
@@ -13,6 +15,8 @@ import com.ufo.socketioandroiddemo.mvp.BasePresenterImpl;
 import com.ufo.tools.MyChat;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.realm.RealmResults;
 import retrofit2.Retrofit;
@@ -27,26 +31,93 @@ import rx.schedulers.Schedulers;
 
 public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.View> implements ChatMessageContract.Presenter {
 
+    private ExecutorService mExecutorService;
+
     private boolean isLoading = false;
     private boolean hasMore = false;
     private int pageSize = 10;
 
 
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+
+    public boolean isHasMore() {
+        return hasMore;
+    }
+
+
     @Override
-    public void loadMoreDataWithChatID(String chatID) {
+    public void initExecutorService() {
+        mExecutorService = Executors.newSingleThreadExecutor();
+    }
+
+
+    @Override
+    public void shutDownExecutorService() {
+        mExecutorService.shutdown();
+    }
+
+
+    @Override
+    public void loadMoreDataWithChatID(final String chatID) {
+
+
+        mExecutorService.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                if (mView == null)
+                    return;
+
+                isLoading = true;
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                RealmResults<ChatMessageBean> result = ChatMessageRepository.getInstance().getChatMessageByChatID(chatID);
+
+                int start = mView.getDataSource().size() + 1 - 1;
+                int length = result.size() - start > pageSize ? result.size() - start - pageSize : -1;
+
+                Log.e("start",start+"");
+                Log.e("length",length+"");
+
+                for (int i = result.size() - start; i > length; i--) {
+                    ChatMessageBean bean = result.get(i);
+                    if (mView.getDataSource().size() > 1) {
+                        mView.getDataSource().add(1, ChatMessageModel.fromBean(bean));
+                    }
+                }
+
+                hasMore = length > 0;
+
+                mView.getHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mView.loadMoreDataComplete();
+                        isLoading = false;
+                    }
+                });
+
+            }
+        });
 
     }
 
     @Override
     public void reloadDataWithChatID(final String chatID) {
 
-        if (mView == null)
-            return;
 
-        mView.getHandler().post(new Runnable() {
-
+        mExecutorService.execute(new Runnable() {
             @Override
             public void run() {
+                if (mView == null)
+                    return;
 
                 isLoading = true;
 
@@ -55,7 +126,7 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
                 if (mView.getDataSource().size() > 0)
                     mView.getDataSource().clear();
 
-                int start = mView.getDataSource().size() > pageSize ? result.size() - pageSize : 0;
+                int start = result.size() > pageSize ? result.size() - pageSize : 0;
 
                 for (int i = start; i < result.size(); i++) {
                     ChatMessageBean bean = result.get(i);
@@ -63,8 +134,17 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
                 }
 
                 hasMore = start > 0;
-                mView.reloadDataComplete();
-                isLoading = false;
+
+                mView.getHandler().post(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        mView.reloadDataComplete();
+                        isLoading = false;
+
+                    }
+                });
 
             }
         });
@@ -75,14 +155,19 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
     @Override
     public void insertChatMessage(final ChatMessageModel model) {
 
-        if (mView == null)
-            return;
-
-        mView.getHandler().post(new Runnable() {
+        mExecutorService.execute(new Runnable() {
             @Override
             public void run() {
-                mView.getDataSource().add(model);
-                mView.updateChatMessageCell();
+                if (mView == null)
+                    return;
+
+                mView.getHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mView.getDataSource().add(model);
+                        mView.updateChatMessageCell();
+                    }
+                });
             }
         });
 
@@ -91,19 +176,25 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
     @Override
     public void updateChatMessage(final ChatMessageModel model) {
 
-        if (mView == null)
-            return;
-
-        mView.getHandler().post(new Runnable() {
+        mExecutorService.execute(new Runnable() {
             @Override
             public void run() {
+                if (mView == null)
+                    return;
+
                 if (mView.getDataSource().size() > 0 && mView.getDataSource().contains(model)) {
                     int index = mView.getDataSource().indexOf(model);
                     mView.getDataSource().set(index, model);
-                    mView.updateChatMessageCell();
+                    mView.getHandler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mView.updateChatMessageCell();
+                        }
+                    });
                 }
             }
         });
+
 
     }
 
