@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.ufo.retrofitextend.RetrofitExtendFactory;
+import com.ufo.socketioandroiddemo.login.UserInfoBean;
+import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 import com.ufo.socketioservice.DeviceToken;
 import com.ufo.socketioservice.SocketIOService;
 import com.ufo.tools.MyChat;
@@ -40,8 +42,15 @@ public class MyApplication extends Application {
             @Override
             public void onActivityStarted(Activity activity) {
                 appCount++;
-                getRecent();
-                startSocketIOService();
+
+                UserInfoRepository userInfoRepository = UserInfoRepository.getInstance();
+                UserInfoBean bean = userInfoRepository.currentUser(getApplicationContext());
+
+                if (bean != null) {
+                    getRecent();
+                    startSocketIOService();
+                }
+
             }
 
             @Override
