@@ -2,10 +2,13 @@ package com.ufo.socketioandroiddemo;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.ufo.retrofitextend.RetrofitExtendFactory;
 import com.ufo.socketioservice.DeviceToken;
+import com.ufo.socketioservice.SocketIOService;
+import com.ufo.tools.MyChat;
 
 /**
  * Created by tjpld on 2017/5/5.
@@ -37,6 +40,8 @@ public class MyApplication extends Application {
             @Override
             public void onActivityStarted(Activity activity) {
                 appCount++;
+                getRecent();
+                startSocketIOService();
             }
 
             @Override
@@ -68,6 +73,15 @@ public class MyApplication extends Application {
 
     public int getAppCount() {
         return appCount;
+    }
+
+    private void startSocketIOService() {
+        Intent intent = new Intent(getApplicationContext(), SocketIOService.class);
+        startService(intent);
+    }
+
+    private void getRecent() {
+        MyChat.getInstance().getRecent(getApplicationContext());
     }
 
 

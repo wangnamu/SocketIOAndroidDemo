@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -214,8 +215,10 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
             @Override
             public void onClick(View v) {
                 String body = mEkBar.getEtChat().getText().toString().trim();
-                mPresenter.sendText(body, mCurrentChatID);
-                mEkBar.getEtChat().getText().clear();
+                if (!TextUtils.isEmpty(body)) {
+                    mPresenter.sendText(body, mCurrentChatID);
+                    mEkBar.getEtChat().getText().clear();
+                }
             }
         });
 
@@ -229,8 +232,10 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
                         || (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode() && KeyEvent.ACTION_DOWN == event.getAction())) {
 
                     String body = mEkBar.getEtChat().getText().toString().trim();
-                    mPresenter.sendText(body, mCurrentChatID);
-                    mEkBar.getEtChat().getText().clear();
+                    if (!TextUtils.isEmpty(body)) {
+                        mPresenter.sendText(body, mCurrentChatID);
+                        mEkBar.getEtChat().getText().clear();
+                    }
 
                 }
                 return true;

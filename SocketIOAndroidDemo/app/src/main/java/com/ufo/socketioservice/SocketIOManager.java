@@ -1,9 +1,16 @@
 package com.ufo.socketioservice;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.ufo.socketioandroiddemo.MainActivity;
+import com.ufo.socketioandroiddemo.R;
 import com.ufo.socketioandroiddemo.login.UserInfoBean;
 import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 import com.ufo.socketioandroiddemo.message.model.ChatMessageModel;
@@ -19,11 +26,16 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 /**
  * Created by tjpld on 2017/5/1.
  */
 
 public class SocketIOManager {
+
+    private static final int NOTIFICATIONS_ID = 100001;
+
 
     private Socket mSocket;
     private static final String mUrl = "http://192.168.19.211:3000";
@@ -143,6 +155,14 @@ public class SocketIOManager {
                     }
 
                 } else {
+
+                    if (message.getAlert()) {
+
+                        PendingIntent pendingIntent = PendingIntent.getActivity(
+                                context, 0, new Intent(context, MainActivity.class), 0);
+
+                        sendNotification(context, message.getTitle(), message.getBody(), pendingIntent);
+                    }
 
                 }
 
@@ -288,6 +308,25 @@ public class SocketIOManager {
 //        [socket emit:@"news" with:@[json]];
 //            }
 //        }
+
+
+    private void sendNotification(Context context, String title, String content, PendingIntent pendingIntent) {
+
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle(title)
+                        .setContentText(content)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true)
+                        .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND);
+
+        notificationManager.notify(NOTIFICATIONS_ID, builder.build());
+
+    }
 
 
 }

@@ -24,27 +24,29 @@ public class LauncherActivity extends Activity {
         if (bean == null) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
+            finish();
         } else {
 
             RealmConfig.setUp(getApplicationContext(), bean.getUserName());
-            getRecent();
-            startSocketIOService();
+//            getRecent();
+//            startSocketIOService();
 
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+            finish();
         }
 
 
     }
 
 
-    private void startSocketIOService() {
-        Intent intent = new Intent(getApplicationContext(), SocketIOService.class);
-        startService(intent);
-    }
-
-    private void getRecent() {
-        MyChat.getInstance().getRecent(getApplicationContext());
-    }
+//    private void startSocketIOService() {
+//        Intent intent = new Intent(getApplicationContext(), SocketIOService.class);
+//        startService(intent);
+//    }
+//
+//    private void getRecent() {
+//        MyChat.getInstance().getRecent(getApplicationContext());
+//    }
 
 }
