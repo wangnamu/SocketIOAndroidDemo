@@ -83,6 +83,12 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
 
                 isLoading = true;
 
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
 
                 final List<ChatMessageModel> list = new ArrayList<>();
 
@@ -97,11 +103,6 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
 
                 hasMore = length > 0;
 
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
                 if (mView != null) {
                     mView.getHandler().post(new Runnable() {
@@ -127,7 +128,6 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
 
     @Override
     public void reloadDataWithChatID(final String chatID) {
-
 
         mExecutorService.execute(new Runnable() {
             @Override
