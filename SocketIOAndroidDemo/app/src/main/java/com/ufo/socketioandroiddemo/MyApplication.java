@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.ufo.retrofitextend.RetrofitExtendFactory;
 import com.ufo.socketioandroiddemo.login.UserInfoBean;
@@ -42,15 +43,14 @@ public class MyApplication extends Application {
             @Override
             public void onActivityStarted(Activity activity) {
                 appCount++;
-
-                UserInfoRepository userInfoRepository = UserInfoRepository.getInstance();
-                UserInfoBean bean = userInfoRepository.currentUser(getApplicationContext());
-
-                if (bean != null) {
-                    getRecent();
-                    startSocketIOService();
+                if (appCount == 1) {
+                    UserInfoRepository userInfoRepository = UserInfoRepository.getInstance();
+                    UserInfoBean bean = userInfoRepository.currentUser(getApplicationContext());
+                    if (bean != null) {
+                        getRecent();
+                        startSocketIOService();
+                    }
                 }
-
             }
 
             @Override

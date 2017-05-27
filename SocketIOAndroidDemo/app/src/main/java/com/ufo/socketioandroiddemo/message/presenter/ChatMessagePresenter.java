@@ -14,9 +14,12 @@ import com.ufo.socketioandroiddemo.message.repository.ChatMessageRepository;
 import com.ufo.socketioandroiddemo.mvp.BasePresenterImpl;
 import com.ufo.tools.MyChat;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 
 import io.realm.RealmResults;
 import retrofit2.Retrofit;
@@ -32,6 +35,8 @@ import rx.schedulers.Schedulers;
 public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.View> implements ChatMessageContract.Presenter {
 
     private ExecutorService mExecutorService;
+
+    private Semaphore mSemaphore;
 
     private boolean isLoading = false;
     private boolean hasMore = false;
@@ -51,6 +56,7 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
     @Override
     public void initExecutorService() {
         mExecutorService = Executors.newSingleThreadExecutor();
+        mSemaphore = new Semaphore(1);
     }
 
 
@@ -63,46 +69,56 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
     @Override
     public void loadMoreDataWithChatID(final String chatID) {
 
+        final int start = mView.getDataSource().size() + 1 - 1;
 
         mExecutorService.execute(new Runnable() {
             @Override
             public void run() {
 
-                if (mView == null)
-                    return;
-
-                isLoading = true;
-
                 try {
-                    Thread.sleep(1000);
+                    mSemaphore.acquire();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
+                isLoading = true;
+
+
+                final List<ChatMessageModel> list = new ArrayList<>();
+
                 RealmResults<ChatMessageBean> result = ChatMessageRepository.getInstance().getChatMessageByChatID(chatID);
 
-                int start = mView.getDataSource().size() + 1 - 1;
                 int length = result.size() - start > pageSize ? result.size() - start - pageSize : -1;
-
-                Log.e("start",start+"");
-                Log.e("length",length+"");
 
                 for (int i = result.size() - start; i > length; i--) {
                     ChatMessageBean bean = result.get(i);
-                    if (mView.getDataSource().size() > 1) {
-                        mView.getDataSource().add(1, ChatMessageModel.fromBean(bean));
-                    }
+                    list.add(ChatMessageModel.fromBean(bean));
                 }
 
                 hasMore = length > 0;
 
-                mView.getHandler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mView.loadMoreDataComplete();
-                        isLoading = false;
-                    }
-                });
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if (mView != null) {
+                    mView.getHandler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mView.getDataSource().size() > 1) {
+                                mView.getDataSource().addAll(1, list);
+                            }
+                            mView.loadMoreDataComplete();
+                            isLoading = false;
+                            mSemaphore.release();
+                        }
+                    });
+                } else {
+                    mSemaphore.release();
+                }
+
 
             }
         });
@@ -116,35 +132,45 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
         mExecutorService.execute(new Runnable() {
             @Override
             public void run() {
-                if (mView == null)
-                    return;
+
+                try {
+                    mSemaphore.acquire();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
                 isLoading = true;
 
-                RealmResults<ChatMessageBean> result = ChatMessageRepository.getInstance().getChatMessageByChatID(chatID);
+                final List<ChatMessageModel> list = new ArrayList<>();
 
-                if (mView.getDataSource().size() > 0)
-                    mView.getDataSource().clear();
+                RealmResults<ChatMessageBean> result = ChatMessageRepository.getInstance().getChatMessageByChatID(chatID);
 
                 int start = result.size() > pageSize ? result.size() - pageSize : 0;
 
                 for (int i = start; i < result.size(); i++) {
                     ChatMessageBean bean = result.get(i);
-                    mView.getDataSource().add(ChatMessageModel.fromBean(bean));
+                    list.add(ChatMessageModel.fromBean(bean));
                 }
 
                 hasMore = start > 0;
 
-                mView.getHandler().post(new Runnable() {
+                if (mView != null) {
+                    mView.getHandler().post(new Runnable() {
 
-                    @Override
-                    public void run() {
+                        @Override
+                        public void run() {
+                            if (mView.getDataSource().size() > 0)
+                                mView.getDataSource().clear();
+                            mView.getDataSource().addAll(list);
+                            mView.reloadDataComplete();
+                            isLoading = false;
+                            mSemaphore.release();
 
-                        mView.reloadDataComplete();
-                        isLoading = false;
-
-                    }
-                });
+                        }
+                    });
+                } else {
+                    mSemaphore.release();
+                }
 
             }
         });
@@ -158,16 +184,26 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
         mExecutorService.execute(new Runnable() {
             @Override
             public void run() {
-                if (mView == null)
-                    return;
 
-                mView.getHandler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mView.getDataSource().add(model);
-                        mView.updateChatMessageCell();
-                    }
-                });
+                try {
+                    mSemaphore.acquire();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if (mView != null) {
+                    mView.getHandler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mView.getDataSource().add(model);
+                            mView.updateChatMessageCell();
+                            mSemaphore.release();
+                        }
+                    });
+                } else {
+                    mSemaphore.release();
+                }
+
             }
         });
 
@@ -179,19 +215,33 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
         mExecutorService.execute(new Runnable() {
             @Override
             public void run() {
-                if (mView == null)
-                    return;
 
-                if (mView.getDataSource().size() > 0 && mView.getDataSource().contains(model)) {
-                    int index = mView.getDataSource().indexOf(model);
-                    mView.getDataSource().set(index, model);
+                try {
+                    mSemaphore.acquire();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if (mView != null) {
                     mView.getHandler().post(new Runnable() {
                         @Override
                         public void run() {
-                            mView.updateChatMessageCell();
+
+                            if (mView.getDataSource().size() > 0 && mView.getDataSource().contains(model)) {
+                                int index = mView.getDataSource().indexOf(model);
+                                mView.getDataSource().set(index, model);
+                                mView.updateChatMessageCell();
+                            }
+
+                            mSemaphore.release();
+
                         }
                     });
+                } else {
+                    mSemaphore.release();
                 }
+
+
             }
         });
 

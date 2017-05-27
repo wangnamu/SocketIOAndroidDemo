@@ -79,7 +79,7 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
 
             HostViewHolder viewHolder = (HostViewHolder) holder;
 
-            viewHolder.setTopTime(position, mData.get(position).getTime(), position - 1 >= 0 ? mData.get(position - 1).getTime() : 0, elapsedTime);
+            viewHolder.setTopTime(position, mData.get(position).getTime(), (position - 1 >= 0 && mData.get(position - 1) != null) ? mData.get(position - 1).getTime() : 0, elapsedTime);
             viewHolder.setHolder(mContext, mData.get(position));
 
 //            viewHolder.mContent.setOnLongClickListener(new View.OnLongClickListener() {
@@ -125,7 +125,7 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
         } else if (holder instanceof GuestViewHolder) {
             GuestViewHolder viewHolder = (GuestViewHolder) holder;
 
-            viewHolder.setTopTime(position, mData.get(position).getTime(), position - 1 >= 0 ? mData.get(position - 1).getTime() : 0, elapsedTime);
+            viewHolder.setTopTime(position, mData.get(position).getTime(), (position - 1 >= 0 && mData.get(position - 1) != null) ? mData.get(position - 1).getTime() : 0, elapsedTime);
             viewHolder.setHolder(mContext, mData.get(position));
 
 //

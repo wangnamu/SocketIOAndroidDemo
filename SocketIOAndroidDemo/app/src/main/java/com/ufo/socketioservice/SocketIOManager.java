@@ -322,7 +322,8 @@ public class SocketIOManager {
                         .setContentText(content)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
-                        .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND);
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setDefaults(Notification.DEFAULT_ALL);
 
         notificationManager.notify(NOTIFICATIONS_ID, builder.build());
 
