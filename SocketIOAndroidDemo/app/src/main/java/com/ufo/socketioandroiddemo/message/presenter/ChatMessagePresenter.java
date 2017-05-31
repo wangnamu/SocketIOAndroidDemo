@@ -1,12 +1,10 @@
 package com.ufo.socketioandroiddemo.message.presenter;
 
-import android.util.Log;
 
 import com.ufo.retrofitextend.RetrofitExtendFactory;
 import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 import com.ufo.socketioandroiddemo.message.api.MessageAPI;
 import com.ufo.socketioandroiddemo.message.contract.ChatMessageContract;
-import com.ufo.socketioandroiddemo.message.model.ChatMessageBean;
 import com.ufo.socketioandroiddemo.message.model.ChatMessageModel;
 import com.ufo.socketioandroiddemo.message.model.MessageTypeEnum;
 import com.ufo.socketioandroiddemo.message.model.SendStatusTypeEnum;
@@ -14,14 +12,12 @@ import com.ufo.socketioandroiddemo.message.repository.ChatMessageRepository;
 import com.ufo.socketioandroiddemo.mvp.BasePresenterImpl;
 import com.ufo.tools.MyChat;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
-import io.realm.RealmResults;
 import retrofit2.Retrofit;
 import rx.Subscriber;
 import rx.Subscription;
@@ -69,7 +65,7 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
     @Override
     public void loadMoreDataWithChatID(final String chatID) {
 
-        final int start = mView.getDataSource().size() + 1 - 1;
+        final int start = mView.getDataSource().size() - 1;
 
         mExecutorService.execute(new Runnable() {
             @Override
@@ -84,25 +80,19 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
                 isLoading = true;
 
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
 
-                final List<ChatMessageModel> list = new ArrayList<>();
+                int totalCount = ChatMessageRepository.getInstance().getChatMessageSizeByChatID(chatID);
 
-                RealmResults<ChatMessageBean> result = ChatMessageRepository.getInstance().getChatMessageByChatID(chatID);
+                int length = totalCount - start > pageSize ? totalCount - start - pageSize : 0;
 
-                int length = result.size() - start > pageSize ? result.size() - start - pageSize : -1;
-
-                for (int i = result.size() - start; i > length; i--) {
-                    ChatMessageBean bean = result.get(i);
-                    list.add(ChatMessageModel.fromBean(bean));
-                }
+                final List<ChatMessageModel> list = ChatMessageRepository.getInstance().getChatMessageByChatID(chatID, length, totalCount - start);
 
                 hasMore = length > 0;
-
 
                 if (mView != null) {
                     mView.getHandler().post(new Runnable() {
@@ -141,16 +131,11 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
 
                 isLoading = true;
 
-                final List<ChatMessageModel> list = new ArrayList<>();
+                int totalCount = ChatMessageRepository.getInstance().getChatMessageSizeByChatID(chatID);
 
-                RealmResults<ChatMessageBean> result = ChatMessageRepository.getInstance().getChatMessageByChatID(chatID);
+                int start = totalCount > pageSize ? totalCount - pageSize : 0;
 
-                int start = result.size() > pageSize ? result.size() - pageSize : 0;
-
-                for (int i = start; i < result.size(); i++) {
-                    ChatMessageBean bean = result.get(i);
-                    list.add(ChatMessageModel.fromBean(bean));
-                }
+                final List<ChatMessageModel> list = ChatMessageRepository.getInstance().getChatMessageByChatID(chatID, start, totalCount);
 
                 hasMore = start > 0;
 

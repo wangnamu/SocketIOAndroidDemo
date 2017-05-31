@@ -334,7 +334,7 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
     @Override
     public void loadMoreDataComplete() {
 
-        if (mRecyclerView.getLayoutManager().getChildCount()>1) {
+        if (mRecyclerView.getLayoutManager().getChildCount() > 1) {
 
             beforeHeight = mRecyclerView.getLayoutManager().getChildAt(1).getHeight();
             int top = mRecyclerView.getLayoutManager().getChildAt(1).getTop();
@@ -350,8 +350,7 @@ public class ChatMessageActivity extends MVPBaseActivity<ChatMessageContract.Vie
             ((LinearLayoutManager) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(pos, top);
 
             shouldScrollBack = true;
-        }
-        else {
+        } else {
             mDataSource.remove(0);
             mAdapter.notifyDataSetChanged();
         }

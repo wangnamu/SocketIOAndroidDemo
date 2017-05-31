@@ -1,7 +1,10 @@
 package com.ufo.socketioandroiddemo.message.repository;
 
+
 import com.ufo.socketioandroiddemo.message.model.ChatBean;
 import com.ufo.socketioandroiddemo.message.model.ChatMessageBean;
+import com.ufo.socketioandroiddemo.message.model.ChatMessageModel;
+import com.ufo.socketioandroiddemo.message.model.ChatModel;
 import com.ufo.socketioandroiddemo.message.model.ChatTypeEnum;
 
 import java.util.ArrayList;
@@ -30,6 +33,7 @@ public class ChatMessageRepository {
     }
 
     private ChatMessageRepository() {
+
     }
 
     public void createChatMessage(List<ChatMessageBean> chatMessageBeans) {
@@ -91,13 +95,13 @@ public class ChatMessageRepository {
         }
 
         realm.insertOrUpdate(chatMessageList);
-
         realm.commitTransaction();
-
+        realm.close();
     }
 
 
     public void updateChatMessage(ChatMessageBean chatMessageBean) {
+
         Realm realm = Realm.getDefaultInstance();
         RealmResults<ChatMessageBean> result = realm.where(ChatMessageBean.class)
                 .equalTo("SID", chatMessageBean.getSID()).findAll();
@@ -107,6 +111,7 @@ public class ChatMessageRepository {
             realm.insertOrUpdate(chatMessageBean);
             realm.commitTransaction();
         }
+        realm.close();
     }
 
 
@@ -123,38 +128,103 @@ public class ChatMessageRepository {
             realm.insert(chatBean);
             realm.commitTransaction();
         }
+        realm.close();
     }
 
 
-    public RealmResults<ChatBean> getChat() {
+    public ChatModel getChatLast() {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<ChatBean> beans = realm.where(ChatBean.class)
                 .equalTo("DisplayInRecently", true)
                 .findAllSorted("Time", Sort.DESCENDING);
-        return beans;
+        if (beans.size() > 0) {
+            ChatModel model = ChatModel.fromBean(beans.first());
+            realm.close();
+            return model;
+        }
+        realm.close();
+        return null;
     }
 
 
-    public RealmResults<ChatMessageBean> getChatMessage() {
+    public List<ChatModel> getChat() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<ChatMessageBean> beans = realm.where(ChatMessageBean.class).findAllSorted("Time", Sort.DESCENDING);
-        return beans;
+        RealmResults<ChatBean> beans = realm.where(ChatBean.class)
+                .equalTo("DisplayInRecently", true)
+                .findAllSorted("Time", Sort.DESCENDING);
+        List<ChatModel> list = new ArrayList<>();
+        for (ChatBean bean : beans) {
+            list.add(ChatModel.fromBean(bean));
+        }
+        realm.close();
+        return list;
     }
 
 
-    public RealmResults<ChatBean> getContact() {
+    public ChatMessageModel getChatMessageLast() {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<ChatMessageBean> beans = realm.where(ChatMessageBean.class)
+                .findAllSorted("Time", Sort.DESCENDING);
+        if (beans.size() > 0) {
+            ChatMessageModel model = ChatMessageModel.fromBean(beans.first());
+            realm.close();
+            return model;
+        }
+        realm.close();
+        return null;
+    }
+
+
+    public List<ChatMessageModel> getChatMessage() {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<ChatMessageBean> beans = realm.where(ChatMessageBean.class)
+                .findAllSorted("Time", Sort.DESCENDING);
+        List<ChatMessageModel> list = new ArrayList<>();
+        for (ChatMessageBean bean : beans) {
+            list.add(ChatMessageModel.fromBean(bean));
+        }
+        realm.close();
+        return list;
+    }
+
+
+    public List<ChatModel> getContact() {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<ChatBean> beans = realm.where(ChatBean.class).findAllSorted("Name", Sort.ASCENDING);
-        return beans;
+        List<ChatModel> list = new ArrayList<>();
+        for (ChatBean bean : beans) {
+            list.add(ChatModel.fromBean(bean));
+        }
+        realm.close();
+        return list;
     }
 
 
-    public RealmResults<ChatMessageBean> getChatMessageByChatID(String chatID) {
+    public List<ChatMessageModel> getChatMessageByChatID(String chatID, int begin, int end) {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<ChatMessageBean> beans = realm.where(ChatMessageBean.class)
                 .equalTo("ChatID", chatID)
                 .findAllSorted("LocalTime", Sort.ASCENDING);
-        return beans;
+        List<ChatMessageModel> list = new ArrayList<>();
+        if (beans.size() > 0) {
+            for (int i = begin; i < end; i++) {
+                ChatMessageBean bean = beans.get(i);
+                list.add(ChatMessageModel.fromBean(bean));
+            }
+        }
+        realm.close();
+        return list;
+    }
+
+
+    public int getChatMessageSizeByChatID(String chatID) {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<ChatMessageBean> beans = realm.where(ChatMessageBean.class)
+                .equalTo("ChatID", chatID)
+                .findAllSorted("LocalTime", Sort.ASCENDING);
+        int size = beans.size();
+        realm.close();
+        return size;
     }
 
 

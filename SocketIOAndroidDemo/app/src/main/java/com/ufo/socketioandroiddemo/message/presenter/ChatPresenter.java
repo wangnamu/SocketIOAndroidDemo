@@ -1,12 +1,12 @@
 package com.ufo.socketioandroiddemo.message.presenter;
 
 import com.ufo.socketioandroiddemo.message.contract.ChatContract;
-import com.ufo.socketioandroiddemo.message.model.ChatBean;
 import com.ufo.socketioandroiddemo.message.model.ChatModel;
 import com.ufo.socketioandroiddemo.message.repository.ChatMessageRepository;
 import com.ufo.socketioandroiddemo.mvp.BasePresenterImpl;
 
-import io.realm.RealmResults;
+import java.util.List;
+
 
 /**
  * Created by tjpld on 2017/5/9.
@@ -24,10 +24,8 @@ public class ChatPresenter extends BasePresenterImpl<ChatContract.View> implemen
             mView.getDataSource().clear();
         }
 
-        RealmResults<ChatBean> result = ChatMessageRepository.getInstance().getChat();
-        for (ChatBean bean : result) {
-            mView.getDataSource().add(ChatModel.fromBean(bean));
-        }
+        List<ChatModel> result = ChatMessageRepository.getInstance().getChat();
+        mView.getDataSource().addAll(result);
 
         mView.getHandler().post(new Runnable() {
             @Override

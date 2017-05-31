@@ -24,11 +24,8 @@ public class ContactPresenter extends BasePresenterImpl<ContactContract.View> im
         if (mView.getDataSource().size() > 0) {
             mView.getDataSource().clear();
         }
-        RealmResults<ChatBean> result = ChatMessageRepository.getInstance().getContact();
 
-        for (ChatBean bean : result) {
-            mView.getDataSource().add(ChatModel.fromBean(bean));
-        }
+        mView.getDataSource().addAll(ChatMessageRepository.getInstance().getContact());
 
         mView.getHandler().post(new Runnable() {
             @Override

@@ -50,7 +50,7 @@ public class MyChat {
 
                 Intent intentSendMessage = new Intent(NotificationAction.Send_Message);
 
-                intentSendMessage.putExtra("model",model);
+                intentSendMessage.putExtra("model", model);
 
                 context.sendBroadcast(intentSendMessage);
 
@@ -86,8 +86,6 @@ public class MyChat {
     }
 
 
-
-
     public void receiveChatMessage(final Context context, final ChatMessageModel model) {
 
         mExecutorService.execute(new Runnable() {
@@ -103,7 +101,7 @@ public class MyChat {
 
                 Intent intentReceiveMessage = new Intent(NotificationAction.Receive_Message);
 
-                intentReceiveMessage.putExtra("model",model);
+                intentReceiveMessage.putExtra("model", model);
 
                 context.sendBroadcast(intentReceiveMessage);
 
@@ -128,10 +126,10 @@ public class MyChat {
                 long last = 0;
                 long current = System.currentTimeMillis();
 
-                RealmResults<ChatBean> chatBeans = ChatMessageRepository.getInstance().getChat();
+                ChatModel chatLast = ChatMessageRepository.getInstance().getChatLast();
 
-                if (chatBeans.size() > 0) {
-                    last = chatBeans.first().getCreateTime();
+                if (chatLast != null) {
+                    last = chatLast.getCreateTime();
                 }
 
                 List<ChatMessageBean> dataChatMessage = new ArrayList<>();
@@ -156,10 +154,10 @@ public class MyChat {
                 }
 
 
-                RealmResults<ChatMessageBean> chatMessageBeans = ChatMessageRepository.getInstance().getChatMessage();
+                ChatMessageModel chatMessageLast = ChatMessageRepository.getInstance().getChatMessageLast();
 
-                if (chatMessageBeans.size() > 0) {
-                    last = chatMessageBeans.first().getTime();
+                if (chatMessageLast != null) {
+                    last = chatMessageLast.getTime();
                 } else {
                     last = UserInfoRepository.getInstance().currentUser(context).getLoginTime();
                 }
