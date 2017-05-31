@@ -23,6 +23,11 @@ public class ContactContract {
     }
 
     public interface Presenter extends BasePresenter<ContactContract.View> {
+
+        void initExecutorService();
+
+        void shutDownExecutorService();
+
         void loadData();
     }
 }

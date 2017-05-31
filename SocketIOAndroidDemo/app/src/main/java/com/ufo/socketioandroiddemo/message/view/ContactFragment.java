@@ -72,6 +72,7 @@ public class ContactFragment extends MVPBaseFragment<ContactContract.View, Conta
 
         mDataSource = new ArrayList<>();
         mHandler = new Handler();
+        mPresenter.initExecutorService();
     }
 
     @Override
@@ -93,6 +94,7 @@ public class ContactFragment extends MVPBaseFragment<ContactContract.View, Conta
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mPresenter.shutDownExecutorService();
         getContext().unregisterReceiver(mReceiver);
     }
 
@@ -103,7 +105,6 @@ public class ContactFragment extends MVPBaseFragment<ContactContract.View, Conta
 
 
     private void initControl(View view) {
-
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.contact_recycler_view);
 

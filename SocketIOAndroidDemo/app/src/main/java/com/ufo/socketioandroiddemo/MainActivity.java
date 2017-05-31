@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout mTabLayout;
 
     String[] mTitles = {"消息", "联系人", "设置"};
-    int[] mDrawables = {R.drawable.ic_message_24dp, R.drawable.ic_person_24dp, R.drawable.ic_settings_24dp};
+    int[] mDrawables = {R.drawable.ic_message, R.drawable.ic_people, R.drawable.ic_setting};
 
 
     @Override
@@ -44,11 +44,8 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (NoScrollViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-
-
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
-
 
         for (int i = 0; i < mTabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = mTabLayout.getTabAt(i);

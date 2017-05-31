@@ -31,7 +31,6 @@ import rx.schedulers.Schedulers;
 public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.View> implements ChatMessageContract.Presenter {
 
     private ExecutorService mExecutorService;
-
     private Semaphore mSemaphore;
 
     private boolean isLoading = false;
@@ -66,6 +65,9 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
     public void loadMoreDataWithChatID(final String chatID) {
 
         final int start = mView.getDataSource().size() - 1;
+
+        if (mExecutorService.isShutdown())
+            return;
 
         mExecutorService.execute(new Runnable() {
             @Override
@@ -119,6 +121,9 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
     @Override
     public void reloadDataWithChatID(final String chatID) {
 
+        if (mExecutorService.isShutdown())
+            return;
+
         mExecutorService.execute(new Runnable() {
             @Override
             public void run() {
@@ -166,6 +171,9 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
     @Override
     public void insertChatMessage(final ChatMessageModel model) {
 
+        if (mExecutorService.isShutdown())
+            return;
+
         mExecutorService.execute(new Runnable() {
             @Override
             public void run() {
@@ -196,6 +204,9 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
 
     @Override
     public void updateChatMessage(final ChatMessageModel model) {
+
+        if (mExecutorService.isShutdown())
+            return;
 
         mExecutorService.execute(new Runnable() {
             @Override

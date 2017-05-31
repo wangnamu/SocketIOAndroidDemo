@@ -77,6 +77,7 @@ public class ChatFragment extends MVPBaseFragment<ChatContract.View, ChatPresent
         super.onCreate(savedInstanceState);
         mDataSource = new ArrayList<>();
         mHandler = new Handler();
+        mPresenter.initExecutorService();
     }
 
     @Override
@@ -100,6 +101,7 @@ public class ChatFragment extends MVPBaseFragment<ChatContract.View, ChatPresent
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mPresenter.shutDownExecutorService();
         getContext().unregisterReceiver(mReceiver);
     }
 

@@ -23,6 +23,11 @@ public class ChatContract {
     }
 
     public interface Presenter extends BasePresenter<View> {
+
+        void initExecutorService();
+
+        void shutDownExecutorService();
+
         void updateChat();
     }
 }
