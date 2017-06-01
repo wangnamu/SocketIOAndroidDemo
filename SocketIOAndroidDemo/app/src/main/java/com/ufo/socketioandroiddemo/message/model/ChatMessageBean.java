@@ -27,7 +27,7 @@ public class ChatMessageBean extends RealmObject {
     private int SendStatusType;// 发送状态
 
     /*--------local--------*/
-    private long LocalTime;
+    private long LocalTime;//本地存储时间
 
 
     public String getSID() {

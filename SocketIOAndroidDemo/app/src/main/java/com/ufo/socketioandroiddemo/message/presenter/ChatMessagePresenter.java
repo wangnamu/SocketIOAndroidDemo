@@ -64,10 +64,12 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
     @Override
     public void loadMoreDataWithChatID(final String chatID) {
 
-        final int start = mView.getDataSource().size() - 1;
-
         if (mExecutorService.isShutdown())
             return;
+
+        final int start = mView.getDataSource().size() - 1;
+
+        final int totalCount = ChatMessageRepository.getInstance().getChatMessageSizeByChatID(chatID);
 
         mExecutorService.execute(new Runnable() {
             @Override
@@ -87,8 +89,6 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
                     e.printStackTrace();
                 }
 
-
-                int totalCount = ChatMessageRepository.getInstance().getChatMessageSizeByChatID(chatID);
 
                 int length = totalCount - start > pageSize ? totalCount - start - pageSize : 0;
 

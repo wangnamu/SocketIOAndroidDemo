@@ -94,7 +94,7 @@ public class ChatMessageRepository {
             }
         }
 
-        realm.insertOrUpdate(chatMessageList);
+        realm.insertOrUpdate(chatMessageBeans);
         realm.commitTransaction();
         realm.close();
     }
@@ -135,7 +135,6 @@ public class ChatMessageRepository {
     public ChatModel getChatLast() {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<ChatBean> beans = realm.where(ChatBean.class)
-                .equalTo("DisplayInRecently", true)
                 .findAllSorted("Time", Sort.DESCENDING);
         if (beans.size() > 0) {
             ChatModel model = ChatModel.fromBean(beans.first());
