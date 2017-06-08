@@ -12,6 +12,7 @@ import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 import com.ufo.socketioservice.DeviceToken;
 import com.ufo.socketioservice.SocketIOService;
 import com.ufo.tools.MyChat;
+import com.ufo.utils.NotificationUtil;
 
 /**
  * Created by tjpld on 2017/5/5.
@@ -31,7 +32,8 @@ public class MyApplication extends Application {
         }
 
         //注册baseUrl
-        RetrofitExtendFactory.initWithBaseUrl("http://192.168.19.223:8080/NettySocketioWebDemo/");
+        RetrofitExtendFactory.initWithBaseUrl("http://192.168.16.61:8089/NettySocketioWebDemo/");
+//        RetrofitExtendFactory.initWithBaseUrl("http://192.168.19.92:8080/NettySocketioWebDemo/");
 
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
@@ -44,6 +46,8 @@ public class MyApplication extends Application {
             public void onActivityStarted(Activity activity) {
                 appCount++;
                 if (appCount == 1) {
+                    NotificationUtil.cancelAllNotification(getApplicationContext());
+
                     UserInfoRepository userInfoRepository = UserInfoRepository.getInstance();
                     UserInfoBean bean = userInfoRepository.currentUser(getApplicationContext());
                     if (bean != null) {

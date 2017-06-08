@@ -14,4 +14,6 @@ public class NotificationAction {
     public static final String Get_Recent_Begin = NSP + "get_recent_begin";
     public static final String Get_Recent_Finish = NSP + "get_recent_finish";
 
+    public static final String SOCKETIO_KICKOFF = NSP + "socketio_kickoff";
+
 }

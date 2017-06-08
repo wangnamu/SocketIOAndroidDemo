@@ -1,6 +1,10 @@
 package com.ufo.socketioandroiddemo;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -16,9 +20,16 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ufo.extend.NoScrollViewPager;
+import com.ufo.socketioandroiddemo.login.LoginActivity;
+import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 import com.ufo.socketioandroiddemo.message.view.ChatFragment;
 import com.ufo.socketioandroiddemo.message.view.ContactFragment;
 import com.ufo.socketioandroiddemo.setting.SettingFragment;
+import com.ufo.socketioservice.SocketIOManager;
+import com.ufo.socketioservice.SocketIOService;
+import com.ufo.tools.NotificationAction;
+
+import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,10 +41,14 @@ public class MainActivity extends AppCompatActivity {
     int[] mDrawables = {R.drawable.ic_message, R.drawable.ic_people, R.drawable.ic_setting};
 
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
 
         // Create the adapter that will return a fragment for each of the three
@@ -83,6 +98,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     private void setTabSelected(int index, boolean selected) {
 

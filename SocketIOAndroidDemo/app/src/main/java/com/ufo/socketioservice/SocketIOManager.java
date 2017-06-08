@@ -1,16 +1,12 @@
 package com.ufo.socketioservice;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.ufo.socketioandroiddemo.MainActivity;
-import com.ufo.socketioandroiddemo.R;
 import com.ufo.socketioandroiddemo.login.UserInfoBean;
 import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 import com.ufo.socketioandroiddemo.message.model.ChatMessageModel;
@@ -18,7 +14,9 @@ import com.ufo.socketioservice.model.SocketIOMessage;
 import com.ufo.socketioservice.model.SocketIONotify;
 import com.ufo.socketioservice.model.SocketIOUserInfo;
 import com.ufo.tools.MyChat;
+import com.ufo.tools.NotificationAction;
 import com.ufo.utils.BackgroundUtil;
+import com.ufo.utils.NotificationUtil;
 
 import java.net.URISyntaxException;
 
@@ -27,21 +25,21 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
-import static android.content.Context.NOTIFICATION_SERVICE;
-
 /**
  * Created by tjpld on 2017/5/1.
  */
 
 public class SocketIOManager {
 
-    private static final int NOTIFICATIONS_ID = 100001;
-
 
     private Socket mSocket;
-    private static final String mUrl = "http://192.168.19.223:3000";
+    private static final String mUrl = "http://192.168.16.61:3000";
+//    private static final String mUrl = "http://192.168.19.92:3000";
 
     private static final String LOGIN = "login";
+    private static final String LOGOFF = "logoff";
+    private static final String CHECKKICKOFF = "checkkickoff";
+
     private static final String EVENT_KICKOFF = "kickoff";
     private static final String EVENT_NEWS = "news";
     private static final String EVENT_NOTIFYOTHERPLATFORMS = "notifyotherplatforms";
@@ -67,7 +65,6 @@ public class SocketIOManager {
             //e.printStackTrace();
             mSocket = null;
         }
-
 
     }
 
@@ -110,21 +107,69 @@ public class SocketIOManager {
                 if (mSocket != null) {
 
                     final Gson gson = new Gson();
-                    String json = gson.toJson(model);
+                    final String json = gson.toJson(model);
 
-                    mSocket.emit(LOGIN, json, new Ack() {
-                        @Override
-                        public void call(Object... args) {
-                            if (args != null && args.length > 0
-                                    && args[0].toString().equals("NO ACK")) {
-                                Log.d("SocketIOManager", "reconnecting");
-                                mSocket.connect();
-                            } else {
-                                Log.d("SocketIOManager", "connected");
+
+                    if (SocketIOLoginStatus.isNeedToCheck(context)) {
+
+                        mSocket.emit(CHECKKICKOFF, json, new Ack() {
+                            @Override
+                            public void call(Object... args) {
+
+                                if (args != null && args.length > 0) {
+
+                                    if (args[0].toString().equals("NO ACK")) {
+                                        Log.d("SocketIOManager", "reconnecting");
+                                        mSocket.connect();
+                                    } else if (args[0].toString().equals("TRUE")) {
+                                        SocketIOLoginStatus.setNeedToCheck(context, true);
+                                        Intent intentKickOff = new Intent(NotificationAction.SOCKETIO_KICKOFF);
+                                        context.sendBroadcast(intentKickOff);
+                                    } else {
+                                        mSocket.emit(LOGIN, json, new Ack() {
+                                            @Override
+                                            public void call(Object... args1) {
+
+                                                if (args1 != null && args1.length > 0) {
+                                                    if (args1[0].toString().equals("NO ACK")) {
+                                                        Log.d("SocketIOManager", "reconnecting");
+                                                        mSocket.connect();
+                                                    } else {
+                                                        Log.d("SocketIOManager", args1 + "");
+                                                        SocketIOLoginStatus.setNeedToCheck(context, true);
+                                                    }
+                                                }
+
+                                            }
+
+                                        });
+                                    }
+                                }
+
+                            }
+                        });
+
+                    } else {
+
+                        mSocket.emit(LOGIN, json, new Ack() {
+                            @Override
+                            public void call(Object... args) {
+
+                                if (args != null && args.length > 0) {
+                                    if (args[0].toString().equals("NO ACK")) {
+                                        Log.d("SocketIOManager", "reconnecting");
+                                        mSocket.connect();
+                                    } else {
+                                        Log.d("SocketIOManager", args + "");
+                                        SocketIOLoginStatus.setNeedToCheck(context, true);
+                                    }
+                                }
+
                             }
 
-                        }
-                    });
+                        });
+
+                    }
 
                 }
 
@@ -162,8 +207,7 @@ public class SocketIOManager {
 
                         PendingIntent pendingIntent = PendingIntent.getActivity(
                                 context, 0, new Intent(context, MainActivity.class), 0);
-
-                        sendNotification(context, message.getTitle(), message.getBody(), pendingIntent);
+                        NotificationUtil.sendNotification(context, message.getTitle(), message.getBody(), pendingIntent);
                     }
 
                 }
@@ -190,7 +234,11 @@ public class SocketIOManager {
         mSocket.on(EVENT_KICKOFF, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Log.d("kickoff", args.toString());
+
+                Log.e("kickoff", args.toString());
+                Intent intentKickOff = new Intent(NotificationAction.SOCKETIO_KICKOFF);
+                context.sendBroadcast(intentKickOff);
+
             }
         });
 
@@ -206,6 +254,29 @@ public class SocketIOManager {
 
         return true;
 
+    }
+
+
+    public boolean loginOff(final Context context) {
+
+        final UserInfoBean userInfoBean = UserInfoRepository.getInstance().currentUser(context);
+
+        if (userInfoBean == null)
+            return false;
+
+        if (mSocket == null)
+            return false;
+
+        SocketIOUserInfo model = new SocketIOUserInfo();
+        model.setSID(userInfoBean.getSID());
+        model.setDeviceType("ANDROID");
+
+        final Gson gson = new Gson();
+        final String json = gson.toJson(model);
+
+        mSocket.emit(LOGOFF, json);
+
+        return true;
     }
 
 
@@ -226,42 +297,13 @@ public class SocketIOManager {
         }
     }
 
+
     public void sendNews(SocketIOMessage msg) {
         if (mSocket != null && mSocket.connected()) {
             final Gson gson = new Gson();
             String json = gson.toJson(msg);
             mSocket.emit(EVENT_NEWS, json);
         }
-    }
-
-
-
-
-    /**
-     * 发送广播
-     *
-     * @param context
-     * @param title
-     * @param content
-     * @param pendingIntent
-     */
-    private void sendNotification(Context context, String title, String content, PendingIntent pendingIntent) {
-
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle(title)
-                        .setContentText(content)
-                        .setContentIntent(pendingIntent)
-                        .setAutoCancel(true)
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setDefaults(Notification.DEFAULT_ALL);
-
-        notificationManager.notify(NOTIFICATIONS_ID, builder.build());
-
     }
 
 
