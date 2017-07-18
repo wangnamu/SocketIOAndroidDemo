@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.ufo.retrofitextend.RetrofitExtendFactory;
 import com.ufo.socketioandroiddemo.login.UserInfoBean;
@@ -32,8 +31,8 @@ public class MyApplication extends Application {
         }
 
         //注册baseUrl
-        RetrofitExtendFactory.initWithBaseUrl("http://192.168.16.61:8089/NettySocketioWebDemo/");
-//        RetrofitExtendFactory.initWithBaseUrl("http://192.168.19.92:8080/NettySocketioWebDemo/");
+//        RetrofitExtendFactory.initWithBaseUrl("http://192.168.16.61:8089/NettySocketioWebDemo/");
+        RetrofitExtendFactory.initWithBaseUrl("http://192.168.19.76:8080/NettySocketioWebDemo/");
 
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
@@ -90,6 +89,7 @@ public class MyApplication extends Application {
 
     private void startSocketIOService() {
         Intent intent = new Intent(getApplicationContext(), SocketIOService.class);
+        intent.putExtra("CheckStatus", true);
         startService(intent);
     }
 

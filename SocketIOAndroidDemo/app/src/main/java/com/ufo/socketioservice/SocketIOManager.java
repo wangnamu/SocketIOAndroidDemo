@@ -12,6 +12,7 @@ import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 import com.ufo.socketioandroiddemo.message.model.ChatMessageModel;
 import com.ufo.socketioservice.model.SocketIOMessage;
 import com.ufo.socketioservice.model.SocketIONotify;
+import com.ufo.socketioservice.model.SocketIOResponse;
 import com.ufo.socketioservice.model.SocketIOUserInfo;
 import com.ufo.tools.MyChat;
 import com.ufo.tools.NotificationAction;
@@ -31,10 +32,9 @@ import io.socket.emitter.Emitter;
 
 public class SocketIOManager {
 
-
     private Socket mSocket;
-    private static final String mUrl = "http://192.168.16.61:3000";
-//    private static final String mUrl = "http://192.168.19.92:3000";
+    //    private static final String mUrl = "http://192.168.16.61:3000";
+    private static final String mUrl = "http://192.168.19.76:3000";
 
     private static final String LOGIN = "login";
     private static final String LOGOFF = "logoff";
@@ -72,7 +72,7 @@ public class SocketIOManager {
         return mSocket;
     }
 
-    public Boolean connect(final Context context) {
+    public Boolean connect(final Context context, final Boolean checkStatus) {
 
         final UserInfoBean userInfoBean = UserInfoRepository.getInstance().currentUser(context);
         final String deviceToken = DeviceToken.getDeviceToken(context);
@@ -91,7 +91,7 @@ public class SocketIOManager {
             @Override
             public void call(Object... args) {
 
-                Log.d("SocketIOManager", "connecting");
+                Log.e("SocketIOManager", "connecting");
 
                 SocketIOUserInfo model = new SocketIOUserInfo();
                 model.setSID(userInfoBean.getSID());
@@ -99,9 +99,12 @@ public class SocketIOManager {
                 model.setNickName(userInfoBean.getNickName());
 
                 model.setDeviceToken(deviceToken);
-                model.setProject("SocketIODemo");
+
+                Log.e("deviceToken",deviceToken);
+
                 model.setDeviceType("ANDROID");
                 model.setLoginTime(System.currentTimeMillis());
+                model.setCheckStatus(checkStatus);
 
 
                 if (mSocket != null) {
@@ -109,67 +112,77 @@ public class SocketIOManager {
                     final Gson gson = new Gson();
                     final String json = gson.toJson(model);
 
+                    mSocket.emit(LOGIN, json, new Ack() {
+                        @Override
+                        public void call(Object... args1) {
 
-                    if (SocketIOLoginStatus.isNeedToCheck(context)) {
+                            Log.e("arg1",args1+"");
+                            if (args1 != null && args1.length > 0) {
+                                if (args1[0].toString().equals("NO ACK")) {
+                                    Log.d("SocketIOManager", "reconnecting");
+                                    mSocket.connect();
+                                } else {
 
-                        mSocket.emit(CHECKKICKOFF, json, new Ack() {
-                            @Override
-                            public void call(Object... args) {
-
-                                if (args != null && args.length > 0) {
-
-                                    if (args[0].toString().equals("NO ACK")) {
-                                        Log.d("SocketIOManager", "reconnecting");
-                                        mSocket.connect();
-                                    } else if (args[0].toString().equals("TRUE")) {
-                                        SocketIOLoginStatus.setNeedToCheck(context, true);
+                                    String resp = args1[0].toString();
+                                    SocketIOResponse socketIOResponse = gson.fromJson(resp, SocketIOResponse.class);
+                                    if (socketIOResponse.getIsSuccess()) {
+                                        Log.e("SocketIOManager", "login success");
+                                    }
+                                    else {
+                                        Log.e("SocketIOManager", socketIOResponse.getMessage());
                                         Intent intentKickOff = new Intent(NotificationAction.SOCKETIO_KICKOFF);
                                         context.sendBroadcast(intentKickOff);
-                                    } else {
-                                        mSocket.emit(LOGIN, json, new Ack() {
-                                            @Override
-                                            public void call(Object... args1) {
-
-                                                if (args1 != null && args1.length > 0) {
-                                                    if (args1[0].toString().equals("NO ACK")) {
-                                                        Log.d("SocketIOManager", "reconnecting");
-                                                        mSocket.connect();
-                                                    } else {
-                                                        Log.d("SocketIOManager", args1 + "");
-                                                        SocketIOLoginStatus.setNeedToCheck(context, true);
-                                                    }
-                                                }
-
-                                            }
-
-                                        });
                                     }
+
                                 }
-
-                            }
-                        });
-
-                    } else {
-
-                        mSocket.emit(LOGIN, json, new Ack() {
-                            @Override
-                            public void call(Object... args) {
-
-                                if (args != null && args.length > 0) {
-                                    if (args[0].toString().equals("NO ACK")) {
-                                        Log.d("SocketIOManager", "reconnecting");
-                                        mSocket.connect();
-                                    } else {
-                                        Log.d("SocketIOManager", args + "");
-                                        SocketIOLoginStatus.setNeedToCheck(context, true);
-                                    }
-                                }
-
                             }
 
-                        });
+                        }
+                    });
 
-                    }
+
+//                    if (SocketIOLoginStatus.isNeedToCheck(context)) {
+//
+//                        mSocket.emit(CHECKKICKOFF, json, new Ack() {
+//                            @Override
+//                            public void call(Object... args) {
+//
+//                                if (args != null && args.length > 0) {
+//
+//                                    if (args[0].toString().equals("NO ACK")) {
+//                                        Log.d("SocketIOManager", "reconnecting");
+//                                        mSocket.connect();
+//                                    } else if (args[0].toString().equals("TRUE")) {
+//                                        SocketIOLoginStatus.setNeedToCheck(context, true);
+//                                        Intent intentKickOff = new Intent(NotificationAction.SOCKETIO_KICKOFF);
+//                                        context.sendBroadcast(intentKickOff);
+//                                    } else {
+//
+//                                    }
+//                                }
+//
+//                            }
+//                        });
+//
+//                    } else {
+//
+//                        mSocket.emit(LOGIN, json, new Ack() {
+//                            @Override
+//                            public void call(Object... args) {
+//                                if (args != null && args.length > 0) {
+//                                    if (args[0].toString().equals("NO ACK")) {
+//                                        Log.d("SocketIOManager", "reconnecting");
+//                                        mSocket.connect();
+//                                    } else {
+//                                        Log.d("SocketIOManager", args + "");
+//                                        SocketIOLoginStatus.setNeedToCheck(context, true);
+//                                    }
+//                                }
+//                            }
+//
+//                        });
+//
+//                    }
 
                 }
 

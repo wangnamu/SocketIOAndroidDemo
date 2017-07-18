@@ -12,7 +12,7 @@ public class SocketIOUserInfo {
     private long LoginTime;// 最近一次登录时间
     private String DeviceType;// 设备类型
     private String DeviceToken;// 设备证书
-    private String Project;// 所属项目
+    private Boolean CheckStatus;// 检查是否已经在其它移动设备上登录过
 
     public String getSID() {
         return SID;
@@ -62,12 +62,12 @@ public class SocketIOUserInfo {
         DeviceToken = deviceToken;
     }
 
-    public String getProject() {
-        return Project;
+    public Boolean getCheckStatus() {
+        return CheckStatus;
     }
 
-    public void setProject(String project) {
-        Project = project;
+    public void setCheckStatus(Boolean checkStatus) {
+        CheckStatus = checkStatus;
     }
 
 

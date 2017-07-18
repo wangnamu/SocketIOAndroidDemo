@@ -30,13 +30,12 @@ public class SocketIOService extends Service {
                 UserInfoRepository.getInstance().logoff(getApplicationContext());
                 SocketIOManager.getInstance().disconnect();
 
-                if (BackgroundUtil.isForeground(getApplicationContext())){
+                if (BackgroundUtil.isForeground(getApplicationContext())) {
                     Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
                     intentLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intentLogin.putExtra("isKickedOff", true);
                     startActivity(intentLogin);
-                }
-                else {
+                } else {
                     PendingIntent pendingIntent = PendingIntent.getActivity(
                             context, 0, new Intent(context, LoginActivity.class), 0);
                     NotificationUtil.sendNotification(context, "提示", "检测到您的账号已在其它设备登录，请重新登录", pendingIntent);
@@ -57,8 +56,9 @@ public class SocketIOService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e("onStartCommand","onStartCommand");
-        SocketIOManager.getInstance().connect(getApplicationContext());
+        Log.e("onStartCommand", "onStartCommand");
+        boolean checkStatus = intent.getBooleanExtra("CheckStatus", true);
+        SocketIOManager.getInstance().connect(getApplicationContext(), checkStatus);
         return super.onStartCommand(intent, flags, startId);
     }
 

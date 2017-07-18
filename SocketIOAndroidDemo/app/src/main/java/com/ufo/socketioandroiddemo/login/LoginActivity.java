@@ -11,7 +11,6 @@ import android.widget.Toast;
 import com.ufo.socketioandroiddemo.MainActivity;
 import com.ufo.socketioandroiddemo.R;
 import com.ufo.socketioandroiddemo.mvp.MVPBaseActivity;
-import com.ufo.socketioservice.SocketIOLoginStatus;
 import com.ufo.socketioservice.SocketIOService;
 import com.ufo.tools.MyChat;
 import com.ufo.tools.RealmConfig;
@@ -29,8 +28,6 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
         setContentView(R.layout.activity_login);
 
         initControl();
-
-        SocketIOLoginStatus.setNeedToCheck(this, false);
 
         boolean isKickedOff = getIntent().getBooleanExtra("isKickedOff", false);
         if (isKickedOff) {
@@ -84,6 +81,7 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
 
     private void startSocketIOService() {
         Intent intent = new Intent(getApplicationContext(), SocketIOService.class);
+        intent.putExtra("CheckStatus", false);
         startService(intent);
     }
 
