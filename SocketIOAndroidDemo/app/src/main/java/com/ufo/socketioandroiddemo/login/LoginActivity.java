@@ -30,11 +30,12 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
         initControl();
 
         boolean isKickedOff = getIntent().getBooleanExtra("isKickedOff", false);
+        String msg = getIntent().getStringExtra("msg");
         if (isKickedOff) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this)
                     .setTitle("提示")
-                    .setMessage("检测到您的账号已在其它设备登录，请重新登录")
-                    .setNegativeButton("确定",null);
+                    .setMessage(msg)
+                    .setNegativeButton("确定", null);
             builder.show();
         }
 
@@ -66,7 +67,6 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
         RealmConfig.setUp(getApplicationContext(), userInfoBean.getUserName());
 
         getRecent();
-        startSocketIOService();
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
@@ -86,7 +86,12 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
     }
 
     private void getRecent() {
-        MyChat.getInstance().getRecent(getApplicationContext());
+        MyChat.getInstance().getRecent(getApplicationContext(), new MyChat.getRecentCallback() {
+            @Override
+            public void getRecentFinish() {
+                startSocketIOService();
+            }
+        });
     }
 
 }

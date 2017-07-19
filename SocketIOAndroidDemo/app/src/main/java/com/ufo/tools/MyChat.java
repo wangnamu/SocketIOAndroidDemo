@@ -114,7 +114,7 @@ public class MyChat {
 
     }
 
-    public void getRecent(final Context context) {
+    public void getRecent(final Context context, final getRecentCallback callback) {
 
         mExecutorService.execute(new Runnable() {
             @Override
@@ -139,7 +139,7 @@ public class MyChat {
                 MessageAPI messageAPI = retrofit.create(MessageAPI.class);
 
 
-                List<ChatModel> chatListSycResult = null;
+                List<ChatModel> chatListSycResult;
 
                 try {
                     chatListSycResult = messageAPI.chatListSyc(UserInfoRepository.getInstance().currentUser(context).getSID(),
@@ -163,7 +163,7 @@ public class MyChat {
                 }
 
 
-                List<ChatMessageModel> chatMessageListSycResult = null;
+                List<ChatMessageModel> chatMessageListSycResult;
 
                 try {
                     chatMessageListSycResult = messageAPI.chatMessageListSyc(UserInfoRepository.getInstance().currentUser(context).getSID(),
@@ -190,6 +190,10 @@ public class MyChat {
                 Intent intentGetRecentFinish = new Intent(NotificationAction.Get_Recent_Finish);
                 context.sendBroadcast(intentGetRecentFinish);
 
+                if (callback != null) {
+                    callback.getRecentFinish();
+                }
+
             }
         });
 
@@ -198,6 +202,10 @@ public class MyChat {
 
     public interface sendChatMessageCallback {
         void send(ChatMessageModel chatMessageModel);
+    }
+
+    public interface getRecentCallback {
+        void getRecentFinish();
     }
 
 }

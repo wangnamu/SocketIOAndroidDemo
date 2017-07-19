@@ -51,7 +51,6 @@ public class MyApplication extends Application {
                     UserInfoBean bean = userInfoRepository.currentUser(getApplicationContext());
                     if (bean != null) {
                         getRecent();
-                        startSocketIOService();
                     }
                 }
             }
@@ -94,7 +93,12 @@ public class MyApplication extends Application {
     }
 
     private void getRecent() {
-        MyChat.getInstance().getRecent(getApplicationContext());
+        MyChat.getInstance().getRecent(getApplicationContext(), new MyChat.getRecentCallback() {
+            @Override
+            public void getRecentFinish() {
+                startSocketIOService();
+            }
+        });
     }
 
 

@@ -100,7 +100,7 @@ public class SocketIOManager {
 
                 model.setDeviceToken(deviceToken);
 
-                Log.e("deviceToken",deviceToken);
+                Log.e("deviceToken", deviceToken);
 
                 model.setDeviceType("ANDROID");
                 model.setLoginTime(System.currentTimeMillis());
@@ -116,7 +116,6 @@ public class SocketIOManager {
                         @Override
                         public void call(Object... args1) {
 
-                            Log.e("arg1",args1+"");
                             if (args1 != null && args1.length > 0) {
                                 if (args1[0].toString().equals("NO ACK")) {
                                     Log.d("SocketIOManager", "reconnecting");
@@ -126,11 +125,11 @@ public class SocketIOManager {
                                     String resp = args1[0].toString();
                                     SocketIOResponse socketIOResponse = gson.fromJson(resp, SocketIOResponse.class);
                                     if (socketIOResponse.getIsSuccess()) {
-                                        Log.e("SocketIOManager", "login success");
-                                    }
-                                    else {
-                                        Log.e("SocketIOManager", socketIOResponse.getMessage());
+                                        Log.d("SocketIOManager", "login success");
+                                    } else {
+                                        Log.d("SocketIOManager", socketIOResponse.getMessage());
                                         Intent intentKickOff = new Intent(NotificationAction.SOCKETIO_KICKOFF);
+                                        intentKickOff.putExtra("msg", socketIOResponse.getMessage());
                                         context.sendBroadcast(intentKickOff);
                                     }
 
@@ -140,49 +139,6 @@ public class SocketIOManager {
                         }
                     });
 
-
-//                    if (SocketIOLoginStatus.isNeedToCheck(context)) {
-//
-//                        mSocket.emit(CHECKKICKOFF, json, new Ack() {
-//                            @Override
-//                            public void call(Object... args) {
-//
-//                                if (args != null && args.length > 0) {
-//
-//                                    if (args[0].toString().equals("NO ACK")) {
-//                                        Log.d("SocketIOManager", "reconnecting");
-//                                        mSocket.connect();
-//                                    } else if (args[0].toString().equals("TRUE")) {
-//                                        SocketIOLoginStatus.setNeedToCheck(context, true);
-//                                        Intent intentKickOff = new Intent(NotificationAction.SOCKETIO_KICKOFF);
-//                                        context.sendBroadcast(intentKickOff);
-//                                    } else {
-//
-//                                    }
-//                                }
-//
-//                            }
-//                        });
-//
-//                    } else {
-//
-//                        mSocket.emit(LOGIN, json, new Ack() {
-//                            @Override
-//                            public void call(Object... args) {
-//                                if (args != null && args.length > 0) {
-//                                    if (args[0].toString().equals("NO ACK")) {
-//                                        Log.d("SocketIOManager", "reconnecting");
-//                                        mSocket.connect();
-//                                    } else {
-//                                        Log.d("SocketIOManager", args + "");
-//                                        SocketIOLoginStatus.setNeedToCheck(context, true);
-//                                    }
-//                                }
-//                            }
-//
-//                        });
-//
-//                    }
 
                 }
 
@@ -217,7 +173,6 @@ public class SocketIOManager {
                 } else {
 
                     if (message.getAlert()) {
-
                         PendingIntent pendingIntent = PendingIntent.getActivity(
                                 context, 0, new Intent(context, MainActivity.class), 0);
                         NotificationUtil.sendNotification(context, message.getTitle(), message.getBody(), pendingIntent);

@@ -27,6 +27,9 @@ public class SocketIOService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(NotificationAction.SOCKETIO_KICKOFF)) {
+
+                String msg = intent.getStringExtra("msg");
+
                 UserInfoRepository.getInstance().logoff(getApplicationContext());
                 SocketIOManager.getInstance().disconnect();
 
@@ -34,11 +37,12 @@ public class SocketIOService extends Service {
                     Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
                     intentLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intentLogin.putExtra("isKickedOff", true);
+                    intentLogin.putExtra("msg",msg);
                     startActivity(intentLogin);
                 } else {
                     PendingIntent pendingIntent = PendingIntent.getActivity(
                             context, 0, new Intent(context, LoginActivity.class), 0);
-                    NotificationUtil.sendNotification(context, "提示", "检测到您的账号已在其它设备登录，请重新登录", pendingIntent);
+                    NotificationUtil.sendNotification(context, "提示", msg, pendingIntent);
                 }
 
                 stopSelf();

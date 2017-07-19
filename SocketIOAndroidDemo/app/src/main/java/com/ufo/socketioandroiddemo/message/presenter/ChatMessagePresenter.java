@@ -2,6 +2,7 @@ package com.ufo.socketioandroiddemo.message.presenter;
 
 
 import com.ufo.retrofitextend.RetrofitExtendFactory;
+import com.ufo.socketioandroiddemo.login.UserInfoBean;
 import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 import com.ufo.socketioandroiddemo.message.api.MessageAPI;
 import com.ufo.socketioandroiddemo.message.contract.ChatMessageContract;
@@ -248,16 +249,22 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
     @Override
     public void sendText(String body, String chatID) {
 
+
+        UserInfoBean userInfoBean = UserInfoRepository.getInstance().currentUser(mView.getAppContext());
+        if (userInfoBean == null) {
+            return;
+        }
+
         String messageID = UUID.randomUUID().toString();
         final ChatMessageModel model = new ChatMessageModel();
         model.setSID(messageID);
-        model.setSenderID(UserInfoRepository.getInstance().currentUser(mView.getAppContext()).getSID());
-        model.setTitle(UserInfoRepository.getInstance().currentUser(mView.getAppContext()).getNickName());
+        model.setSenderID(userInfoBean.getSID());
+        model.setTitle(userInfoBean.getNickName());
         model.setBody(body);
         model.setTime(System.currentTimeMillis());
         model.setMessageType(MessageTypeEnum.Text);
-        model.setNickName(UserInfoRepository.getInstance().currentUser(mView.getAppContext()).getNickName());
-        model.setHeadPortrait(UserInfoRepository.getInstance().currentUser(mView.getAppContext()).getHeadPortrait());
+        model.setNickName(userInfoBean.getNickName());
+        model.setHeadPortrait(userInfoBean.getHeadPortrait());
         model.setChatID(chatID);
         model.setSendStatusType(SendStatusTypeEnum.Sending);
 
@@ -273,7 +280,7 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
         Retrofit retrofit = RetrofitExtendFactory.createNormalRetrofit(mView.getAppContext());
         MessageAPI messageAPI = retrofit.create(MessageAPI.class);
 
-        Subscription subscription = messageAPI.sendTextAsyc(chatID, body, messageID, UserInfoRepository.getInstance().currentUser(mView.getAppContext()).getSID())
+        Subscription subscription = messageAPI.sendTextAsyc(chatID, body, messageID, userInfoBean.getSID())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<ChatMessageModel>() {
