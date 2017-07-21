@@ -158,9 +158,11 @@ public class ChatMessageModel implements Parcelable {
 
     public boolean isHost(Context context) {
 
-        String currentUserID = UserInfoRepository.getInstance().currentUser(context).getSID();
-        if (currentUserID.equals(this.SenderID))
-            return true;
+        if (UserInfoRepository.getInstance().currentUser(context) != null) {
+            String currentUserID = UserInfoRepository.getInstance().currentUser(context).getSID();
+            if (currentUserID.equals(this.SenderID))
+                return true;
+        }
         return false;
 
     }
@@ -252,7 +254,6 @@ public class ChatMessageModel implements Parcelable {
             return new ChatMessageModel[size];
         }
     };
-
 
 
     @Override

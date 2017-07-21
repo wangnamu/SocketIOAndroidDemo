@@ -20,16 +20,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ufo.extend.NoScrollViewPager;
-import com.ufo.socketioandroiddemo.login.LoginActivity;
-import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 import com.ufo.socketioandroiddemo.message.view.ChatFragment;
 import com.ufo.socketioandroiddemo.message.view.ContactFragment;
 import com.ufo.socketioandroiddemo.setting.SettingFragment;
-import com.ufo.socketioservice.SocketIOManager;
-import com.ufo.socketioservice.SocketIOService;
-import com.ufo.tools.NotificationAction;
-
-import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity {
 

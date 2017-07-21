@@ -37,7 +37,7 @@ public class SocketIOService extends Service {
                     Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
                     intentLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intentLogin.putExtra("isKickedOff", true);
-                    intentLogin.putExtra("msg",msg);
+                    intentLogin.putExtra("msg", msg);
                     startActivity(intentLogin);
                 } else {
                     PendingIntent pendingIntent = PendingIntent.getActivity(
@@ -61,7 +61,10 @@ public class SocketIOService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e("onStartCommand", "onStartCommand");
-        boolean checkStatus = intent.getBooleanExtra("CheckStatus", true);
+        boolean checkStatus = true;
+        if (intent != null) {
+            checkStatus = intent.getBooleanExtra("CheckStatus", true);
+        }
         SocketIOManager.getInstance().connect(getApplicationContext(), checkStatus);
         return super.onStartCommand(intent, flags, startId);
     }

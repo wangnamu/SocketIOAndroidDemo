@@ -34,11 +34,10 @@ public class SocketIOManager {
 
     private Socket mSocket;
     //    private static final String mUrl = "http://192.168.16.61:3000";
-    private static final String mUrl = "http://192.168.19.76:3000";
+    private static final String mUrl = "http://192.168.19.86:3000";
 
     private static final String LOGIN = "login";
     private static final String LOGOFF = "logoff";
-    private static final String CHECKKICKOFF = "checkkickoff";
 
     private static final String EVENT_KICKOFF = "kickoff";
     private static final String EVENT_NEWS = "news";
@@ -203,9 +202,19 @@ public class SocketIOManager {
             @Override
             public void call(Object... args) {
 
-                Log.e("kickoff", args.toString());
-                Intent intentKickOff = new Intent(NotificationAction.SOCKETIO_KICKOFF);
-                context.sendBroadcast(intentKickOff);
+                Log.d("onKickoff->", args[0].toString());
+
+                if (BackgroundUtil.isForeground(context)) {
+
+                    Gson gson = new Gson();
+
+                    SocketIOResponse socketIOResponse = gson.fromJson(args[0].toString(), SocketIOResponse.class);
+
+                    Intent intentKickOff = new Intent(NotificationAction.SOCKETIO_KICKOFF);
+                    intentKickOff.putExtra("msg", socketIOResponse.getMessage());
+                    context.sendBroadcast(intentKickOff);
+
+                }
 
             }
         });
@@ -225,15 +234,15 @@ public class SocketIOManager {
     }
 
 
-    public boolean loginOff(final Context context) {
+    public void loginOff(final Context context) {
 
         final UserInfoBean userInfoBean = UserInfoRepository.getInstance().currentUser(context);
 
         if (userInfoBean == null)
-            return false;
+            return;
 
         if (mSocket == null)
-            return false;
+            return;
 
         SocketIOUserInfo model = new SocketIOUserInfo();
         model.setSID(userInfoBean.getSID());
@@ -243,8 +252,6 @@ public class SocketIOManager {
         final String json = gson.toJson(model);
 
         mSocket.emit(LOGOFF, json);
-
-        return true;
     }
 
 
