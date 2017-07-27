@@ -34,7 +34,7 @@ public class SocketIOManager {
 
     private Socket mSocket;
     //    private static final String mUrl = "http://192.168.16.61:3000";
-    private static final String mUrl = "http://192.168.19.86:3000";
+    private static final String mUrl = "http://192.168.19.74:3000";
 
     private static final String LOGIN = "login";
     private static final String LOGOFF = "logoff";

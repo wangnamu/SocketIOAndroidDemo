@@ -19,6 +19,8 @@ public class ChatMessageModel implements Parcelable {
     private String SID;// 主键
     @SerializedName(value = "SenderID", alternate = {"senderID"})
     private String SenderID;// 发送人ID
+    @SerializedName(value = "SenderDeviceToken", alternate = {"senderDeviceToken"})
+    private String SenderDeviceToken;// 发送人设备编号
     @SerializedName(value = "Title", alternate = {"title"})
     private String Title;// 标题
     @SerializedName(value = "Body", alternate = {"body"})
@@ -65,6 +67,14 @@ public class ChatMessageModel implements Parcelable {
 
     public void setSenderID(String senderID) {
         SenderID = senderID;
+    }
+
+    public String getSenderDeviceToken() {
+        return SenderDeviceToken;
+    }
+
+    public void setSenderDeviceToken(String senderDeviceToken) {
+        SenderDeviceToken = senderDeviceToken;
     }
 
     public String getTitle() {
@@ -171,6 +181,7 @@ public class ChatMessageModel implements Parcelable {
         ChatMessageBean bean = new ChatMessageBean();
         bean.setSID(getSID());
         bean.setSenderID(getSenderID());
+        bean.setSenderDeviceToken(getSenderDeviceToken());
         bean.setTitle(getTitle());
         bean.setBody(getBody());
         bean.setTime(getTime());
@@ -189,6 +200,7 @@ public class ChatMessageModel implements Parcelable {
         ChatMessageModel model = new ChatMessageModel();
         model.setSID(bean.getSID());
         model.setSenderID(bean.getSenderID());
+        model.setSenderDeviceToken(bean.getSenderDeviceToken());
         model.setTitle(bean.getTitle());
         model.setBody(bean.getBody());
         model.setTime(bean.getTime());
@@ -213,6 +225,7 @@ public class ChatMessageModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(SID);
         dest.writeString(SenderID);
+        dest.writeString(SenderDeviceToken);
         dest.writeString(Title);
         dest.writeString(Body);
         dest.writeLong(Time);
@@ -234,6 +247,7 @@ public class ChatMessageModel implements Parcelable {
 
             chatMessageModel.setSID(source.readString());
             chatMessageModel.setSenderID(source.readString());
+            chatMessageModel.setSenderDeviceToken(source.readString());
             chatMessageModel.setTitle(source.readString());
             chatMessageModel.setBody(source.readString());
             chatMessageModel.setTime(source.readLong());

@@ -7,7 +7,6 @@ import android.content.Intent;
 import com.ufo.retrofitextend.RetrofitExtendFactory;
 import com.ufo.socketioandroiddemo.login.UserInfoRepository;
 import com.ufo.socketioandroiddemo.message.api.MessageAPI;
-import com.ufo.socketioandroiddemo.message.model.ChatBean;
 import com.ufo.socketioandroiddemo.message.model.ChatMessageBean;
 import com.ufo.socketioandroiddemo.message.model.ChatMessageModel;
 import com.ufo.socketioandroiddemo.message.model.ChatModel;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import io.realm.RealmResults;
 import retrofit2.Retrofit;
 
 /**

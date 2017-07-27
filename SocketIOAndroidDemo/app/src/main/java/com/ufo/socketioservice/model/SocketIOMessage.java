@@ -10,6 +10,7 @@ public class SocketIOMessage {
 
     private String SID;// 主键
     private String SenderID;// 发送人ID
+    private String SenderDeviceToken;// 发送人设备编号
     private HashSet<String> ReceiverIDs;// 接收人ID
     private String Title;// 标题
     private String Body;//内容
@@ -27,6 +28,14 @@ public class SocketIOMessage {
 
     public void setSID(String SID) {
         this.SID = SID;
+    }
+
+    public String getSenderDeviceToken() {
+        return SenderDeviceToken;
+    }
+
+    public void setSenderDeviceToken(String senderDeviceToken) {
+        SenderDeviceToken = senderDeviceToken;
     }
 
     public String getSenderID() {

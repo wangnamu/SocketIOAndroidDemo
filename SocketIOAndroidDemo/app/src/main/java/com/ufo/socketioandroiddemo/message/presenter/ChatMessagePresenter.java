@@ -11,6 +11,7 @@ import com.ufo.socketioandroiddemo.message.model.MessageTypeEnum;
 import com.ufo.socketioandroiddemo.message.model.SendStatusTypeEnum;
 import com.ufo.socketioandroiddemo.message.repository.ChatMessageRepository;
 import com.ufo.socketioandroiddemo.mvp.BasePresenterImpl;
+import com.ufo.socketioservice.DeviceToken;
 import com.ufo.tools.MyChat;
 
 import java.util.List;
@@ -251,7 +252,8 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
 
 
         UserInfoBean userInfoBean = UserInfoRepository.getInstance().currentUser(mView.getAppContext());
-        if (userInfoBean == null) {
+        String deviceToken = DeviceToken.getDeviceToken(mView.getContext());
+        if (userInfoBean == null || deviceToken == null) {
             return;
         }
 
@@ -259,6 +261,7 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
         final ChatMessageModel model = new ChatMessageModel();
         model.setSID(messageID);
         model.setSenderID(userInfoBean.getSID());
+        model.setSenderDeviceToken(deviceToken);
         model.setTitle(userInfoBean.getNickName());
         model.setBody(body);
         model.setTime(System.currentTimeMillis());
@@ -280,7 +283,7 @@ public class ChatMessagePresenter extends BasePresenterImpl<ChatMessageContract.
         Retrofit retrofit = RetrofitExtendFactory.createNormalRetrofit(mView.getAppContext());
         MessageAPI messageAPI = retrofit.create(MessageAPI.class);
 
-        Subscription subscription = messageAPI.sendTextAsyc(chatID, body, messageID, userInfoBean.getSID())
+        Subscription subscription = messageAPI.sendTextAsyc(chatID, body, messageID, userInfoBean.getSID(), deviceToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<ChatMessageModel>() {

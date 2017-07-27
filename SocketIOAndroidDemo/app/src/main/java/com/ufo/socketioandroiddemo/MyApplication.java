@@ -32,7 +32,7 @@ public class MyApplication extends Application {
 
         //注册baseUrl
 //        RetrofitExtendFactory.initWithBaseUrl("http://192.168.16.61:8089/NettySocketioWebDemo/");
-        RetrofitExtendFactory.initWithBaseUrl("http://192.168.19.86:8080/NettySocketioWebDemo/");
+        RetrofitExtendFactory.initWithBaseUrl("http://192.168.19.74:8080/NettySocketioWebDemo/");
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override

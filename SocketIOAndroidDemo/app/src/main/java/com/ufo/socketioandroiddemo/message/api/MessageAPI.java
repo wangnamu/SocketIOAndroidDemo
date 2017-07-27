@@ -39,5 +39,6 @@ public interface MessageAPI {
             (@Field("chatID") String chatID,
              @Field("body") String body,
              @Field("messageID") String messageID,
-             @Field("senderID") String senderID);
+             @Field("senderID") String senderID,
+             @Field("senderDeviceToken") String senderDeviceToken);
 }

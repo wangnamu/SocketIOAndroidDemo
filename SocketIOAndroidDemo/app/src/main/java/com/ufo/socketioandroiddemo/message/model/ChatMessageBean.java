@@ -11,8 +11,8 @@ public class ChatMessageBean extends RealmObject {
 
     @PrimaryKey
     private String SID;// 主键
-
     private String SenderID;// 发送人ID
+    private String SenderDeviceToken;// 发送人设备编号
     private String Title;// 标题
     private String Body;//内容
     private long Time;// 时间
@@ -44,6 +44,14 @@ public class ChatMessageBean extends RealmObject {
 
     public void setSenderID(String senderID) {
         SenderID = senderID;
+    }
+
+    public String getSenderDeviceToken() {
+        return SenderDeviceToken;
+    }
+
+    public void setSenderDeviceToken(String senderDeviceToken) {
+        SenderDeviceToken = senderDeviceToken;
     }
 
     public String getTitle() {
