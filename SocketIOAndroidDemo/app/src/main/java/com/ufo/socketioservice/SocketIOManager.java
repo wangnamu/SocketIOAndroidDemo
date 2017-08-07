@@ -33,8 +33,8 @@ import io.socket.emitter.Emitter;
 public class SocketIOManager {
 
     private Socket mSocket;
-    //    private static final String mUrl = "http://192.168.16.61:3000";
-    private static final String mUrl = "http://192.168.19.74:3000";
+    //private static final String mUrl = "http://192.168.16.61:3000";
+    private static final String mUrl = "http://192.168.19.211:3000";
 
     private static final String LOGIN = "login";
     private static final String LOGOFF = "logoff";
@@ -59,6 +59,7 @@ public class SocketIOManager {
         try {
             IO.Options opts = new IO.Options();
             opts.forceNew = false;
+            opts.transports = new String[]{"websocket"};
             mSocket = IO.socket(mUrl, opts);
         } catch (URISyntaxException e) {
             //e.printStackTrace();
@@ -233,7 +234,6 @@ public class SocketIOManager {
 
     }
 
-
     public void loginOff(final Context context) {
 
         final UserInfoBean userInfoBean = UserInfoRepository.getInstance().currentUser(context);
@@ -254,7 +254,6 @@ public class SocketIOManager {
         mSocket.emit(LOGOFF, json);
     }
 
-
     public boolean disconnect() {
         if (mSocket != null) {
             mSocket.disconnect();
@@ -263,7 +262,6 @@ public class SocketIOManager {
         return true;
     }
 
-
     public void notifyOtherPlatforms(SocketIONotify notify) {
         if (mSocket != null && mSocket.connected()) {
             final Gson gson = new Gson();
@@ -271,7 +269,6 @@ public class SocketIOManager {
             mSocket.emit(EVENT_NOTIFYOTHERPLATFORMS, json);
         }
     }
-
 
     public void sendNews(SocketIOMessage msg) {
         if (mSocket != null && mSocket.connected()) {

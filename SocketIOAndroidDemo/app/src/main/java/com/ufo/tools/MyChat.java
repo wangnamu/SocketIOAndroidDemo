@@ -14,6 +14,8 @@ import com.ufo.socketioandroiddemo.message.repository.ChatMessageRepository;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -171,7 +173,27 @@ public class MyChat {
                     return;
                 }
 
+
+                Collections.sort(chatMessageListSycResult, new Comparator<ChatMessageModel>() {
+                    @Override
+                    public int compare(ChatMessageModel c1, ChatMessageModel c2) {
+                        if (c1.getTime() < c2.getTime()) {
+                            return -1;
+                        } else if (c1.getTime() > c2.getTime()) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    }
+                });
+
+
                 for (ChatMessageModel chatMessageModel : chatMessageListSycResult) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     chatMessageModel.setLocalTime(System.currentTimeMillis());
                     dataChatMessage.add(chatMessageModel.toBean());
                 }
